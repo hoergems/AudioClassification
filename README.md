@@ -4,7 +4,7 @@
 
     git clone https://github.com/hoergems/AudioClassification.git
     cd AudioClassification && mkdir build && cd build
-    cmake -DCMAKE_INSTALL_PREFIX=<install folder>
+    cmake -DCMAKE_INSTALL_PREFIX=<install folder> ..
     make && make install
 
 ## Usage
