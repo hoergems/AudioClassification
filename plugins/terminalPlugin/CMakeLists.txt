@@ -1,0 +1,1 @@
+ADD_TERMINAL_PLUGIN(audioClassificationTerminalPlugin ${CMAKE_CURRENT_LIST_DIR}/AudioClassificationTerminalPlugin.cpp)

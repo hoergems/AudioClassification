@@ -1,0 +1,1 @@
+ADD_OBSERVATION_PLUGIN(audioClassificationObservationPlugin ${CMAKE_CURRENT_LIST_DIR}/AudioClassificationObservationPlugin.cpp)

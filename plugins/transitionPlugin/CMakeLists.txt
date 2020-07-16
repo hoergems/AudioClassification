@@ -1,0 +1,2 @@
+ADD_TRANSITION_PLUGIN(audioClassificationTransitionPlugin ${CMAKE_CURRENT_LIST_DIR}/AudioClassificationTransitionPlugin.cpp)
+target_include_directories(audioClassificationTransitionPlugin PRIVATE ${ROOT_PATH}/plugins/shared/)
