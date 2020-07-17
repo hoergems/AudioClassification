@@ -27,7 +27,7 @@
     </include>
 
     <include>
-      <uri>model://Cup</uri>
+      <uri>model://cup</uri>
       <pose>0.0 0.0 0.0 0 0 0</pose>
     </include>    
         

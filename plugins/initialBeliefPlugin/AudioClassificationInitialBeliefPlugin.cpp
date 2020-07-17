@@ -65,14 +65,19 @@ public:
         robotEnvironment_->getGazeboInterface()->setStateVector(initialStateVector_);
 
         // Now compute the cup pose in world coordinates
-        GZPose endEffectorPose = endEffectorLink_->WorldPose();
+        GZPose endEffectorPose = LinkWorldPose(endEffectorLink_);
 
         // Relative pose of the cup with respect to the end effector
         GZPose relativeCupPose;
-        relativeCupPose.Pos().X() = initialStateVector_[7];
-        relativeCupPose.Pos().Y() = initialStateVector_[8];
-        relativeCupPose.Pos().Z() = initialStateVector_[9];
-
+        #ifdef GZ_GT_7
+            relativeCupPose.Pos().X() = initialStateVector_[7];
+            relativeCupPose.Pos().Y() = initialStateVector_[8];
+            relativeCupPose.Pos().Z() = initialStateVector_[9];
+        #else
+            relativeCupPose.pos.x = initialStateVector_[7];
+            relativeCupPose.pos.y = initialStateVector_[8];
+            relativeCupPose.pos.z = initialStateVector_[9];
+        #endif            
         // The cup pose in world coordinates
         GZPose cupWorldPoseGZ = relativeCupPose + endEffectorPose;
         geometric::Pose cupWorldPose(cupWorldPoseGZ);
@@ -111,7 +116,7 @@ private:
 private:
     OpptUserDataSharedPtr makeUserData_() const {
         OpptUserDataSharedPtr userData(new AudioClassificationUserData);
-        userData->as<AudioClassificationUserData>()->endEffectorPose = geometric::Pose(endEffectorLink_->WorldPose());
+        userData->as<AudioClassificationUserData>()->endEffectorPose = geometric::Pose(LinkWorldPose(endEffectorLink_));
         return userData;
     }
 
@@ -127,6 +132,17 @@ private:
 
         return linkPtr;
     }
+
+    GZPose LinkWorldPose(const gazebo::physics::Link* link) const{
+    // Returns link world pose according to gazebo api enabled
+    #ifdef GZ_GT_7
+        return link->WorldPose();
+    #else 
+        return link->GetWorldPose();
+    #endif
+
+    }
+
 };
 
 OPPT_REGISTER_INITIAL_BELIEF_PLUGIN(AudioClassificationInitialBeliefPlugin)

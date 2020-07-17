@@ -141,9 +141,15 @@ public :
 
         // The next 3 dimensions of the next state vector describe the relative position of
         // the cup with respect to the end effector
-        nextStateVector.push_back(cupLink_->WorldPose().Pos().X() - endEffectorLink_->WorldPose().Pos().X());
-        nextStateVector.push_back(cupLink_->WorldPose().Pos().Y() - endEffectorLink_->WorldPose().Pos().Y());
-        nextStateVector.push_back(cupLink_->WorldPose().Pos().Z() - endEffectorLink_->WorldPose().Pos().Z());
+        #ifdef GZ_GT_7
+            nextStateVector.push_back(cupLink_->WorldPose().Pos().X() - endEffectorLink_->WorldPose().Pos().X());
+            nextStateVector.push_back(cupLink_->WorldPose().Pos().Y() - endEffectorLink_->WorldPose().Pos().Y());
+            nextStateVector.push_back(cupLink_->WorldPose().Pos().Z() - endEffectorLink_->WorldPose().Pos().Z());
+        #else
+            nextStateVector.push_back(cupLink_->GetWorldPose().pos.x - endEffectorLink_->GetWorldPose().pos.x);
+            nextStateVector.push_back(cupLink_->GetWorldPose().pos.y - endEffectorLink_->GetWorldPose().pos.y);
+            nextStateVector.push_back(cupLink_->GetWorldPose().pos.z - endEffectorLink_->GetWorldPose().pos.z);
+        #endif
 
         PropagationResultSharedPtr propagationResult(new PropagationResult);
         propagationResult->nextState = RobotStateSharedPtr(new VectorState(nextStateVector));
@@ -193,15 +199,24 @@ private:
         // is smaller than 0.01 meters, the cup will "travel" with the end effector.
         // TODO: Make sure the cup remains in its current positions when the end effector
         // moves away from the cup
-        FloatType l2norm = math::l2norm(relativeCupPosition);
+        FloatType l2norm = sqrt(std::inner_product(relativeCupPosition.begin(), relativeCupPosition.end(), relativeCupPosition.begin(), 0.0));
         if (l2norm < 0.01) {
-            GZPose endEffectorPose = endEffectorLink_->WorldPose();
-            geometric::Pose newCupPose(endEffectorPose.Pos().X(),
-                                       endEffectorPose.Pos().Y(),
-                                       endEffectorPose.Pos().Z(),
-                                       0.0,
-                                       0.0,
-                                       0.0);
+            GZPose endEffectorPose = LinkWorldPose(endEffectorLink_);
+            #ifdef GZ_GT_7
+                geometric::Pose newCupPose(endEffectorPose.Pos().X(),
+                                           endEffectorPose.Pos().Y(),
+                                           endEffectorPose.Pos().Z(),
+                                           0.0,
+                                           0.0,
+                                           0.0);
+            #else
+                geometric::Pose newCupPose(endEffectorPose.pos.x,
+                                           endEffectorPose.pos.y,
+                                           endEffectorPose.pos.z,
+                                           0.0,
+                                           0.0,
+                                           0.0);
+            #endif                
             cupLink_->SetWorldPose(newCupPose.toGZPose());
         }
 
@@ -227,7 +242,7 @@ private:
             // specified by endEffectorMotionDistance_
 
             // Get the updated end effector pose after we moved it to the cup position
-            geometric::Pose newEndEffectorPose(endEffectorLink_->WorldPose());
+            geometric::Pose newEndEffectorPose(LinkWorldPose(endEffectorLink_));
 
             // Then we push the cup forward in x-direction (relative to the end effector link)
             geometric::Pose pushVector(endEffectorMotionDistance_, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -334,7 +349,7 @@ private:
 
     OpptUserDataSharedPtr makeUserData_() const {
         OpptUserDataSharedPtr userData(new AudioClassificationUserData);
-        userData->as<AudioClassificationUserData>()->endEffectorPose = geometric::Pose(endEffectorLink_->WorldPose());
+        userData->as<AudioClassificationUserData>()->endEffectorPose = geometric::Pose(LinkWorldPose(endEffectorLink_));
         return userData;
 
     }
@@ -354,6 +369,17 @@ private:
 
         return linkPtr;
     }
+
+    GZPose LinkWorldPose(const gazebo::physics::Link* link) const{
+    // Returns link world pose according to gazebo api enabled
+    #ifdef GZ_GT_7
+        return link->WorldPose();
+    #else 
+        return link->GetWorldPose();
+    #endif
+
+    }
+
 
 };
 
