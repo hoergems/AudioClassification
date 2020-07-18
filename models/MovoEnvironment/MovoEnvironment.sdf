@@ -22,7 +22,7 @@
     </physics>	
     
     <include>
-      <uri>model://MovoSevenDOF</uri>
+      <uri>model://movo</uri>
       <pose>0.0 0.0 0.0 0 0 0</pose>
     </include>
 

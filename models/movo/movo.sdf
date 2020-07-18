@@ -20,7 +20,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/movo_components/collision/vector_base_collision.stl</uri>
+            <uri>file://movo/meshes/movo_components/collision/vector_base_collision.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -29,7 +29,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/movo_components/collision/movo_fixed_body_collision.stl</uri>
+            <uri>file://movo/meshes/movo_components/collision/movo_fixed_body_collision.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -38,7 +38,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/movo_components/visual/vector_base.dae</uri>
+            <uri>file://movo/meshes/movo_components/visual/vector_base.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -47,7 +47,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/movo_components/visual/movo_fixed_payload.dae</uri>
+            <uri>file://movo/meshes/movo_components/visual/movo_fixed_payload.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -56,7 +56,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/movo_body/movo_lower_body.dae</uri>
+            <uri>file://movo/meshes/movo_body/movo_lower_body.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -80,7 +80,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/movo_components/collision/movo_upper_body_collision.stl</uri>
+            <uri>file://movo/meshes/movo_components/collision/movo_upper_body_collision.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -89,7 +89,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/base.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/base.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -98,7 +98,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/pan_tilt/collision/pan_tilt_base.stl</uri>
+            <uri>file://movo/meshes/pan_tilt/collision/pan_tilt_base.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -107,7 +107,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/base.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/base.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -116,7 +116,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/movo_components/visual/movo_moving_payload.dae</uri>
+            <uri>file://movo/meshes/movo_components/visual/movo_moving_payload.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -125,7 +125,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/base.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/base.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -134,7 +134,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/pan_tilt/visual/pan_tilt_base.dae</uri>
+            <uri>file://movo/meshes/pan_tilt/visual/pan_tilt_base.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -143,7 +143,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/base.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/base.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -152,7 +152,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/movo_body/movo_upper_body.dae</uri>
+            <uri>file://movo/meshes/movo_body/movo_upper_body.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -196,7 +196,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/shoulder_7dof.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/shoulder_7dof.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -205,7 +205,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/shoulder_7dof.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/shoulder_7dof.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -249,7 +249,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/arm_half_1.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/arm_half_1.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -258,7 +258,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/arm_half_1.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/arm_half_1.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -302,7 +302,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/arm_half_2.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/arm_half_2.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -311,7 +311,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/arm_half_2.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/arm_half_2.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -355,7 +355,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/forearm_7dof.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/forearm_7dof.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -364,7 +364,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/forearm_7dof.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/forearm_7dof.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -408,7 +408,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/wrist_spherical_1.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/wrist_spherical_1.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -417,7 +417,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/wrist_spherical_1.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/wrist_spherical_1.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -461,7 +461,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/wrist_spherical_2.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/wrist_spherical_2.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -470,7 +470,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/wrist_spherical_2.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/wrist_spherical_2.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -514,7 +514,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/kinova_actuator_gearing.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/kinova_actuator_gearing.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -531,7 +531,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/kg3_base_link.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/kg3_base_link.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -540,7 +540,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/kinova_actuator_gearing.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/kinova_actuator_gearing.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -557,7 +557,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/kg3_base_link.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/kg3_base_link.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -601,7 +601,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -610,7 +610,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -619,7 +619,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -628,7 +628,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -670,7 +670,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -679,7 +679,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -688,7 +688,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -697,7 +697,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -739,7 +739,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -748,7 +748,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -757,7 +757,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -766,7 +766,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -808,7 +808,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/pan_tilt/collision/pan_link.stl</uri>
+            <uri>file://movo/meshes/pan_tilt/collision/pan_link.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -817,7 +817,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/pan_tilt/visual/pan_link.dae</uri>
+            <uri>file://movo/meshes/pan_tilt/visual/pan_link.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -859,7 +859,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/pan_tilt/collision/tilt_link.stl</uri>
+            <uri>file://movo/meshes/pan_tilt/collision/tilt_link.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -868,7 +868,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/sensors/collision/kinect_one_collision.stl</uri>
+            <uri>file://movo/meshes/sensors/collision/kinect_one_collision.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -877,7 +877,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/pan_tilt/visual/tilt_link.dae</uri>
+            <uri>file://movo/meshes/pan_tilt/visual/tilt_link.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -886,7 +886,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/sensors/visual/kinect_one.dae</uri>
+            <uri>file://movo/meshes/sensors/visual/kinect_one.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -928,7 +928,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/shoulder_7dof.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/shoulder_7dof.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -937,7 +937,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/shoulder_7dof.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/shoulder_7dof.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -981,7 +981,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/arm_half_1.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/arm_half_1.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -990,7 +990,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/arm_half_1.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/arm_half_1.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1034,7 +1034,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/arm_half_2.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/arm_half_2.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1043,7 +1043,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/arm_half_2.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/arm_half_2.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1087,7 +1087,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/forearm_7dof.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/forearm_7dof.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1096,7 +1096,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/forearm_7dof.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/forearm_7dof.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1140,7 +1140,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/wrist_spherical_1.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/wrist_spherical_1.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1149,7 +1149,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/wrist_spherical_1.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/wrist_spherical_1.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1193,7 +1193,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/wrist_spherical_2.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/wrist_spherical_2.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1202,7 +1202,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/wrist_spherical_2.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/wrist_spherical_2.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1246,7 +1246,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/collision/kinova_actuator_gearing.stl</uri>
+            <uri>file://movo/meshes/manipulation/jaco/collision/kinova_actuator_gearing.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1255,7 +1255,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/kg3_base_link.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/kg3_base_link.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1264,7 +1264,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/jaco/visual/kinova_actuator_gearing.dae</uri>
+            <uri>file://movo/meshes/manipulation/jaco/visual/kinova_actuator_gearing.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1273,7 +1273,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/kg3_base_link.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/kg3_base_link.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1317,7 +1317,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1326,7 +1326,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1335,7 +1335,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1344,7 +1344,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1386,7 +1386,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1395,7 +1395,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1404,7 +1404,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1413,7 +1413,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1455,7 +1455,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_knuckle.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1464,7 +1464,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/collision/finger_tip.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -1473,7 +1473,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_knuckle.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1482,7 +1482,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
+            <uri>file://movo/meshes/manipulation/kinova_grippers/visual/finger_tip.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -1524,7 +1524,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file://MovoSevenDOF/meshes/movo_body/movo_mid_body.dae</uri>
+            <uri>file://movo/meshes/movo_body/movo_mid_body.dae</uri>
           </mesh>
         </geometry>
       </visual>
