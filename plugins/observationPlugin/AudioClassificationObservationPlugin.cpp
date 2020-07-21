@@ -14,7 +14,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 #include <oppt/plugin/Plugin.hpp>
-
+#include "oppt/opptCore/Distribution.hpp"
 namespace oppt
 {
 class AudioClassificationObservationPlugin: public ObservationPlugin
@@ -35,6 +35,62 @@ public :
     virtual ObservationResultSharedPtr getObservation(const ObservationRequest* observationRequest) const override {
         ObservationResultSharedPtr observationResult(new ObservationResult);
         VectorFloat observationVec({0.0});
+        observationResult->state = observationRequest->currentState.get();
+        observationResult->action = observationRequest->action;
+        auto Action = observationRequest->action;
+        unsigned int binNumber = Action->as<DiscreteVectorAction>()->getBinNumber();
+        VectorFloat stateVec = observationRequest->currentState->as<VectorState>()->asVector();
+        FloatType sample = dist_(*(robotEnvironment_->getRobot()->getRandomEngine().get()));
+
+        if (binNumber == 4) //SLIDE
+        {
+            if (stateVec[stateVec.size() - 1] == 0) // PLASTIC CUP
+            {
+                if (sample <= 0.1)
+                    observationVec[0] = 0;
+                else if (sample <= 0.2)
+                    observationVec[0] = 1;
+                else
+                    observationVec[0] = 2;
+            }
+            else // COFFEE MUG
+            {
+                if (sample <= 0.1)
+                    observationVec[0] = 0;
+                else if (sample <= 0.8)
+                    observationVec[0] = 1;
+                else
+                    observationVec[0] = 2;
+            }
+        }
+        else if (binNumber == 5) //BANG
+        {
+            if (stateVec[stateVec.size() - 1] == 0) // PLASTIC CUP
+            {
+                if (sample <= 0.1)
+                    observationVec[0] = 0;
+                else if (sample <= 0.8)
+                    observationVec[0] = 1;
+                else
+                    observationVec[0] = 2;
+
+            }
+            else //COFFEE MUG
+            {
+                if (sample <= 0.7)
+                    observationVec[0] = 0;
+                else if (sample <= 0.9)
+                    observationVec[0] = 1;
+                else
+                    observationVec[0] = 2;
+            }
+        }
+        else
+        {   
+            observationVec[0] = 3;
+        }
+
+
         observationResult->observation = ObservationSharedPtr(new VectorObservation(observationVec));
         return observationResult;
     }

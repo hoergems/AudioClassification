@@ -40,7 +40,14 @@ public :
         return validityReport;
     }
 
-    virtual bool isTerminal(const PropagationResultSharedPtr& propagationResult) override {        
+    virtual bool isTerminal(const PropagationResultSharedPtr& propagationResult) override {
+
+        VectorFloat actionVec = propagationResult->action->as<VectorAction>()->asVector();
+        unsigned int binNumber = propagationResult->action->as<DiscreteVectorAction>()->getBinNumber();
+
+        if ((binNumber == 6) || (binNumber == 7))
+            return true;
+
         return false;
     }
 
