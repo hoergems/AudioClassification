@@ -34,7 +34,41 @@ public :
     }
 
     virtual double getReward(const PropagationResultSharedPtr& propagationResult) const override {
-        return 0.0;
+        VectorFloat stateVec = propagationResult->nextState->as<VectorState>()->asVector();
+        auto Action = propagationResult->action;
+        unsigned int binNumber = Action->as<DiscreteVectorAction>()->getBinNumber();
+
+        if ((binNumber == 4) || (binNumber == 5)) // SLIDE OR BANG ACTION
+        {
+            return -1.0;
+        }
+        else if (binNumber == 6) // MOVE TO LOCATION A
+        {
+            if (stateVec[stateVec.size() - 1] == 0) // PLASTIC CUP
+            {
+                return 10.0;
+            }
+            else
+            {
+                return -100.0;
+            }
+        }
+        else if (binNumber == 7) // MOVE TO LOCATION B
+        {
+            if (stateVec[stateVec.size() - 1] == 1) // COFFEE MUG
+            {
+                return 10.0;
+            }
+            else
+            {
+                return -100.0;
+            }
+        }
+        else // MOVEMENT ACTIONS
+        {
+            return 0.0;
+        }
+
     }
 
     virtual std::pair<double, double> getMinMaxReward() const override {

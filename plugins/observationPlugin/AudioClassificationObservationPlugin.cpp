@@ -99,16 +99,61 @@ public :
                                   const Action *action,
                                   const Observation *observation) const override {
         unsigned int binNumber = action->as<DiscreteVectorAction>()->getBinNumber();
-        if (binNumber == 4) {
-            // SLIDE action
-        } else if (binNumber == 5) {
-            // BANG action
+        VectorFloat stateVec = state->as<VectorState>()->asVector();
+        VectorFloat observationVec = observation->as<VectorObservation>()->asVector();
+        if (binNumber == 4) // SLIDE ACTION
+        {
+            if (stateVec[stateVec.size() - 1] == 0) //PLASTIC CUP
+            {
+                if (observationVec[observationVec.size() - 1] == 2)
+                    return 0.8;
+                else
+                    return 0.1;
+            }
+            else // COFFEE MUG
+            {
+                if (observationVec[observationVec.size() - 1] == 1)
+                    return 0.7;
+                else if (observationVec[observationVec.size() -1] == 0)
+                    return 0.1;
+                else
+                    return 0.2;
+            }
+        } 
+        else if (binNumber == 5) //BANG ACTION
+        {
+            if (stateVec[stateVec.size() - 1] == 0) //PLASTIC CUP
+            {
+                if (observationVec[observationVec.size() - 1] == 1)
+                    return 0.7;
+                else if (observationVec[observationVec.size() - 1] == 0)
+                    return 0.1;
+                else
+                    return 0.2;
+            }
+            else //COFFEE MUG
+            {
+                if (observationVec[observationVec.size() - 1] == 0)
+                    return 0.7;
+                else if (observationVec[observationVec.size() -1] == 1)
+                    return 0.2;
+                else
+                    return 0.1;
+            }            
         }
-        return 1.0;
+        else
+        {
+            if (observationVec[observationVec.size() - 1] == 3)
+                return 1.0;
+            else
+                ERROR("IMPOSSIBLE");
+        }
     }   
 
 private:
     const RobotEnvironment* robotEnvironment_;
+
+    mutable std::uniform_real_distribution<FloatType> dist_;
 };
 
 OPPT_REGISTER_OBSERVATION_PLUGIN(AudioClassificationObservationPlugin)
