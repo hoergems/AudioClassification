@@ -257,7 +257,7 @@ private:
 
             // The end effector velocity necessary to bring the end effector from its current pose (the pose after
             // moving it to the cup position) to the desired end effector pose after pushing
-            VectorFloat endEffectorVelocity(3, 0.0);
+            VectorFloat endEffectorVelocity(6, 0.0);
             endEffectorVelocity[0] = newEndEffectorWorldPoseAfterPushing.position.x() - newEndEffectorPose.position.x();
             endEffectorVelocity[1] = newEndEffectorWorldPoseAfterPushing.position.y() - newEndEffectorPose.position.y();
             endEffectorVelocity[2] = newEndEffectorWorldPoseAfterPushing.position.z() - newEndEffectorPose.position.z();

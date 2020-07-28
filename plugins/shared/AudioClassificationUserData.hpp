@@ -20,7 +20,7 @@ public:
 	}
 
 	virtual void serialize(std::ostream& os, const std::string &prefix = "") const override {
-		os << prefix << ": " << endEffectorPose;
+		os << prefix << ": " << endEffectorPose.toGZPose();
 	}
 
 };
