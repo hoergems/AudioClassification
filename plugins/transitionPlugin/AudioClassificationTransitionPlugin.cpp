@@ -157,8 +157,8 @@ public :
         propagationResult->nextState->setGazeboWorldState(robotEnvironment_->getGazeboInterface()->getWorldState(true));
 
         // REMOVE ME
-        LOGGING("Should run fine");
-        getchar();
+        // LOGGING("Should run fine");
+        // getchar();
         
         return propagationResult;
     }
