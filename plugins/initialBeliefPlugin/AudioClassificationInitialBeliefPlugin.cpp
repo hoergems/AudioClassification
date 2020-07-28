@@ -42,7 +42,7 @@ public:
             static_cast<const AudioClassificationInitialBeliefOptions *>(options_.get())->endEffectorLink;
         endEffectorLink_ = getLinkPointer_(endEffectorLinkName);
 
-        // Get a pointer to the cup link        
+        // Get a pointer to the cup link
         std::string cupLinkName =
             static_cast<const AudioClassificationInitialBeliefOptions *>(options_.get())->cupLink;
         cupLink_ = getLinkPointer_(cupLinkName);
@@ -50,7 +50,13 @@ public:
         if (!endEffectorLink_)
             ERROR("End effector link '" + endEffectorLinkName + "' couldn't be found");
         if (!cupLink_)
-            ERROR("Cup link '" + cupLinkName + "' couldn't be found");        
+            ERROR("Cup link '" + cupLinkName + "' couldn't be found");
+
+        // Construct the initial object property distribution
+        VectorFloat initialObjectPropertyBelief =
+            static_cast<const AudioClassificationInitialBeliefOptions *>(options_.get())->initialObjectPropertyBelief;
+        objectPropertyDistribution_ =
+            std::make_unique<std::discrete_distribution<unsigned int>>(initialObjectPropertyBelief.begin(), initialObjectPropertyBelief.end());
         return true;
     }
 
@@ -61,23 +67,25 @@ public:
         world->ResetPhysicsStates();
         world->ResetTime();
 
+        VectorFloat initialStateVector = initialStateVector_;
+
         // This will set the joint angles to the ones defined in initialStateVector_
-        robotEnvironment_->getGazeboInterface()->setStateVector(initialStateVector_);
+        robotEnvironment_->getGazeboInterface()->setStateVector(initialStateVector);
 
         // Now compute the cup pose in world coordinates
         GZPose endEffectorPose = LinkWorldPose(endEffectorLink_);
 
         // Relative pose of the cup with respect to the end effector
         GZPose relativeCupPose;
-        #ifdef GZ_GT_7
-            relativeCupPose.Pos().X() = initialStateVector_[7];
-            relativeCupPose.Pos().Y() = initialStateVector_[8];
-            relativeCupPose.Pos().Z() = initialStateVector_[9];
-        #else
-            relativeCupPose.pos.x = initialStateVector_[7];
-            relativeCupPose.pos.y = initialStateVector_[8];
-            relativeCupPose.pos.z = initialStateVector_[9];
-        #endif            
+#ifdef GZ_GT_7
+        relativeCupPose.Pos().X() = initialStateVector[7];
+        relativeCupPose.Pos().Y() = initialStateVector[8];
+        relativeCupPose.Pos().Z() = initialStateVector[9];
+#else
+        relativeCupPose.pos.x = initialStateVector[7];
+        relativeCupPose.pos.y = initialStateVector[8];
+        relativeCupPose.pos.z = initialStateVector[9];
+#endif
         // The cup pose in world coordinates
         GZPose cupWorldPoseGZ = relativeCupPose + endEffectorPose;
         geometric::Pose cupWorldPose(cupWorldPoseGZ);
@@ -90,13 +98,18 @@ public:
         robotEnvironment_->applyChanges();
 
         // Now that we've set the initial joint angles and initial cup pose, construct a gazebo world state
-        robotEnvironment_->getGazeboInterface()->makeInitialWorldState(initialStateVector_, false);
+        robotEnvironment_->getGazeboInterface()->makeInitialWorldState(initialStateVector, false);
 
         // Then get the initial world state
         GazeboWorldStatePtr initialWorldState = robotEnvironment_->getGazeboInterface()->getInitialWorldState();
 
+        // Sample the object property (object type)
+        auto randomEngine = robotEnvironment_->getRobot()->getRandomEngine();
+        unsigned int objectType = (*(objectPropertyDistribution_.get()))(*(randomEngine.get()));
+        initialStateVector[10] = (FloatType)(objectType);
+
         // Construct the initial state
-        RobotStateSharedPtr initialState(new VectorState(initialStateVector_));
+        RobotStateSharedPtr initialState(new VectorState(initialStateVector));
         initialState->setGazeboWorldState(initialWorldState);
         initialState->setUserData(makeUserData_());
         return initialState;
@@ -113,6 +126,9 @@ private:
     // Pointer to the cup link
     gazebo::physics::Link *cupLink_ = nullptr;
 
+    // The initial distribution for the object property
+    std::unique_ptr<std::discrete_distribution<unsigned int>> objectPropertyDistribution_ = nullptr;
+
 private:
     OpptUserDataSharedPtr makeUserData_() const {
         OpptUserDataSharedPtr userData(new AudioClassificationUserData);
@@ -122,7 +138,7 @@ private:
 
     gazebo::physics::Link *getLinkPointer_(const std::string &linkName) const {
         gazebo::physics::Link *linkPtr = nullptr;
-        auto links = robotEnvironment_->getGazeboInterface()->getLinks();        
+        auto links = robotEnvironment_->getGazeboInterface()->getLinks();
         for (auto &link : links) {
             if (link->GetScopedName().find(linkName) != std::string::npos) {
                 linkPtr = link;
@@ -133,13 +149,13 @@ private:
         return linkPtr;
     }
 
-    GZPose LinkWorldPose(const gazebo::physics::Link* link) const{
-    // Returns link world pose according to gazebo api enabled
-    #ifdef GZ_GT_7
+    GZPose LinkWorldPose(const gazebo::physics::Link* link) const {
+        // Returns link world pose according to gazebo api enabled
+#ifdef GZ_GT_7
         return link->WorldPose();
-    #else 
+#else
         return link->GetWorldPose();
-    #endif
+#endif
 
     }
 

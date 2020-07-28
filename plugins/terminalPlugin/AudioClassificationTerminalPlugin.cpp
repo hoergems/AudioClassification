@@ -41,12 +41,14 @@ public :
     }
 
     virtual bool isTerminal(const PropagationResultSharedPtr& propagationResult) override {
+        if (propagationResult->action) {
+            VectorFloat actionVec = propagationResult->action->as<VectorAction>()->asVector();
+            unsigned int binNumber = propagationResult->action->as<DiscreteVectorAction>()->getBinNumber();
 
-        VectorFloat actionVec = propagationResult->action->as<VectorAction>()->asVector();
-        unsigned int binNumber = propagationResult->action->as<DiscreteVectorAction>()->getBinNumber();
-
-        if ((binNumber == 6) || (binNumber == 7))
-            return true;
+            // Executing MOVE_TO_LOCATION_A or MOVE_TO_LOCATION_B results in a terminal state
+            if ((binNumber == 6) || (binNumber == 7))
+                return true;
+        }
 
         return false;
     }

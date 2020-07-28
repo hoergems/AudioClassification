@@ -32,6 +32,8 @@ public:
 
   std::string cupLink = "";
 
+  VectorFloat initialObjectPropertyBelief;
+
   static std::unique_ptr<options::OptionParser> makeParser() {
     std::unique_ptr<options::OptionParser> parser =
       PluginOptions::makeParser();
@@ -45,6 +47,9 @@ public:
                                    &AudioClassificationInitialBeliefOptions::initialState);
     parser->addOption<std::string>("movoOptions", "endEffectorLink", &AudioClassificationInitialBeliefOptions::endEffectorLink);
     parser->addOption<std::string>("movoOptions", "cupLink", &AudioClassificationInitialBeliefOptions::cupLink);
+    parser->addOption<VectorFloat>("initialBeliefOptions",
+                                   "initialObjectPropertyBelief",
+                                   &AudioClassificationInitialBeliefOptions::initialObjectPropertyBelief);
   }
 
 };

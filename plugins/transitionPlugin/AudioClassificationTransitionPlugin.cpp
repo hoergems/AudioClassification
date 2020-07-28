@@ -134,10 +134,7 @@ public :
 
         // The first 7 dimensions of the next state vector are the new joint angles
         VectorFloat nextStateVector = nextJointAngles;
-
-        // REMOVE ME
-        LOGGING("Should run fine");
-        getchar();
+        
 
         // The next 3 dimensions of the next state vector describe the relative position of
         // the cup with respect to the end effector
@@ -151,10 +148,18 @@ public :
             nextStateVector.push_back(cupLink_->GetWorldPose().pos.z - endEffectorLink_->GetWorldPose().pos.z);
         #endif
 
+        // Add the object property to the state vector (same as current state)
+        nextStateVector.push_back(currentStateVector[10]);
+
         PropagationResultSharedPtr propagationResult(new PropagationResult);
         propagationResult->nextState = RobotStateSharedPtr(new VectorState(nextStateVector));
         propagationResult->nextState->setUserData(makeUserData_());
         propagationResult->nextState->setGazeboWorldState(robotEnvironment_->getGazeboInterface()->getWorldState(true));
+
+        // REMOVE ME
+        LOGGING("Should run fine");
+        getchar();
+        
         return propagationResult;
     }
 
