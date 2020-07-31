@@ -10,8 +10,8 @@
 
 // #include <ObservationService/ObservationRequest.h>
 // #include <ObservationService/ObservationResponse.h>
-#include "/home/jihirshu/workspaces/ObjectDetection_ws/devel/include/ObservationService/ObservationRequest.h"
-#include "/home/jihirshu/workspaces/ObjectDetection_ws/devel/include/ObservationService/ObservationResponse.h"
+#include "ObservationRequest.h"
+#include "ObservationResponse.h"
 
 namespace ObservationService
 {
