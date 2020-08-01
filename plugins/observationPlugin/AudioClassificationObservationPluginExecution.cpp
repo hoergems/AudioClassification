@@ -120,8 +120,8 @@ public :
             else //COFFEE MUG
             {
                 ObservationService::Observation srv;
-                srv.request.state = atoll("0");
-                srv.request.action = atoll("0");
+                srv.request.state = atoll("1");
+                srv.request.action = atoll("1");
                 if (client.call(srv))
                 {
                     response = (int)srv.response.observation;
