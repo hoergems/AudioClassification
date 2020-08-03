@@ -19,6 +19,7 @@
 #include "AudioClassificationActionDiscretizer.hpp"
 #include "AudioClassificationTransitionPluginOptions.hpp"
 #include "AudioClassificationUserData.hpp"
+#include "MovoRobotInterface/MovoRobotInterface.hpp"
 
 namespace oppt
 {
@@ -62,6 +63,10 @@ public :
         setupIKSolver_();
 
         endEffectorMotionDistance_ = options->endEffectorMotionDistance;
+
+        // If this is the execution plugin, initialize the Movo API
+        if (robotEnvironment_->isExecutionEnvironment())
+            initializeMovoInterface_();
         return true;
     }
 
@@ -178,18 +183,30 @@ private:
      */
     FloatType endEffectorMotionDistance_ = 0.05;
 
+    /** @brief The interface to the physical robot */
+    std::unique_ptr<MovoRobotInterface> movoRobotInterface_ = nullptr;
+
 private:
+    void initializeMovoInterface_() {        
+        movoRobotInterface_ = std::unique_ptr<MovoRobotInterface>(new MovoRobotInterface);
+        movoRobotInterface_->init();
+
+        // Move the arm to the initial joint angles
+        VectorFloat initialState = static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get())->initialState;
+        VectorFloat initialJointAngles(initialState.begin(), initialState.begin() + 7);        
+        movoRobotInterface_->moveToInitialJointAngles(initialJointAngles);    
+    }
 
     VectorFloat applyEndEffectorVelocity_(const VectorFloat &currentStateVector, const VectorFloat &endEffectorVelocity) const {
         auto tracIkSolver = static_cast<oppt::TracIKSolver *>(robotEnvironment_->getRobot()->getIKSolver());
-        VectorFloat currentJointAngles(currentStateVector.begin(), currentStateVector.begin() + 7);
+        VectorFloat currentJointAngles = getCurrentJointAngles_(currentStateVector);
 
         // Get the vector of joint velocities corresponding to the end effector velocity
         VectorFloat jointVelocities =
             tracIkSolver->jointVelocitiesFromTwist(currentJointAngles, endEffectorVelocity);
 
         // The next joint angles are then simply the current joint angles, plus the joint velocities
-        VectorFloat newJointAngles = addVectors(currentJointAngles, jointVelocities);
+        VectorFloat newJointAngles = applyJointVelocities_(currentJointAngles, jointVelocities);
 
         // Update the Gazebo model with the next joint angles
         robotEnvironment_->getGazeboInterface()->setStateVector(newJointAngles);
@@ -229,6 +246,31 @@ private:
     }
 
     /**
+     * @brief Get the current joint angles of the robot. If this is the planning plugin,
+     * the current joint angles are simply obtained from the current state vector. If this is the
+     * execution plugin, we read the current joint angles from the robot
+     */
+    VectorFloat getCurrentJointAngles_(const VectorFloat &currentStateVector) const {
+        if (robotEnvironment_->isExecutionEnvironment())
+            return movoRobotInterface_->getCurrentJointAngles();
+        VectorFloat currentJointAngles(currentStateVector.begin(), currentStateVector.begin() + 7);
+        return currentJointAngles;
+    }
+
+    /**
+     * @brief Apply a vector of joint velocities to the robot and return the resulting vector of joint angles
+     */
+    VectorFloat applyJointVelocities_(const VectorFloat &currentJointAngles, const VectorFloat &jointVelocities) const {
+        if (robotEnvironment_->isExecutionEnvironment()) {
+            FloatType durationMS = 1000.0;            
+            movoRobotInterface_->applyJointVelocities(jointVelocities, durationMS);
+            return movoRobotInterface_->getCurrentJointAngles();
+        }
+
+        return addVectors(currentJointAngles, jointVelocities);
+    }
+
+    /**
      * @brief Perform one of the macro actions (SLIDE, BANG, Move to location A, Move to location B)
      */
     VectorFloat performMacroAction_(const VectorFloat &currentStateVector,
@@ -263,7 +305,7 @@ private:
             endEffectorVelocity[2] = newEndEffectorWorldPoseAfterPushing.position.z() - newEndEffectorPose.position.z();
 
             // Apply this velocity to the end effector. This will result in a new set of joint angles that correspong
-            // to the resulting end effector pose (after pushing the object)
+            // to the resulting end effector pose (after pushing the object)            
             newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
 
             // We simply set the resulting world pose of the cup (after pushing it) to be equal to the resulting
@@ -281,7 +323,7 @@ private:
         if (macroAction == 2) {
             // For the BANG action we assume that the resulting joint angles are equal
             // to the ones we got after moving the end effector to the cup position.
-            // So we actually don't have to do anything here
+            // So we actually don't have to do anything here                       
         }
 
         if (macroAction == 3 or macroAction == 4) {

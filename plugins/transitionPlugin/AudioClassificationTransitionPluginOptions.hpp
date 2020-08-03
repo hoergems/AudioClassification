@@ -36,6 +36,8 @@ public:
 
     FloatType endEffectorMotionDistance = 0.0;
 
+    VectorFloat initialState;
+
     static std::unique_ptr<options::OptionParser> makeParser() {
         std::unique_ptr<options::OptionParser> parser =
             PluginOptions::makeParser();
@@ -59,6 +61,9 @@ public:
         parser->addOption<FloatType>("transitionPluginOptions",
                                      "endEffectorMotionDistance",
                                      &AudioClassificationTransitionPluginOptions::endEffectorMotionDistance);
+        parser->addOption<VectorFloat>("initialBeliefOptions",
+                                       "initialState",
+                                       &AudioClassificationTransitionPluginOptions::initialState);
     }
 
 };
