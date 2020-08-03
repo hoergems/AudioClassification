@@ -193,8 +193,8 @@ private:
 
         // Move the arm to the initial joint angles
         VectorFloat initialState = static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get())->initialState;
-        VectorFloat initialJointAngles(initialState.begin(), initialState.begin() + 7);
-        movoRobotInterface_->moveToInitialJointAngles(initialJointAngles);                
+        VectorFloat initialJointAngles(initialState.begin(), initialState.begin() + 7);        
+        movoRobotInterface_->moveToInitialJointAngles(initialJointAngles);    
     }
 
     VectorFloat applyEndEffectorVelocity_(const VectorFloat &currentStateVector, const VectorFloat &endEffectorVelocity) const {
@@ -305,7 +305,7 @@ private:
             endEffectorVelocity[2] = newEndEffectorWorldPoseAfterPushing.position.z() - newEndEffectorPose.position.z();
 
             // Apply this velocity to the end effector. This will result in a new set of joint angles that correspong
-            // to the resulting end effector pose (after pushing the object)
+            // to the resulting end effector pose (after pushing the object)            
             newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
 
             // We simply set the resulting world pose of the cup (after pushing it) to be equal to the resulting
@@ -323,7 +323,7 @@ private:
         if (macroAction == 2) {
             // For the BANG action we assume that the resulting joint angles are equal
             // to the ones we got after moving the end effector to the cup position.
-            // So we actually don't have to do anything here
+            // So we actually don't have to do anything here                       
         }
 
         if (macroAction == 3 or macroAction == 4) {

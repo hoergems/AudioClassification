@@ -8,7 +8,15 @@
     make && make install
 
 ## Usage
-Open a terminal and run
+On the MOVO2 computer, open a terminal and run
+
+    movostop
+
+Then run
+
+    roslaunch movo_bringup_simple main.launch
+
+On your computer, open a terminal and run
 
     source <install folder>/share/oppt/setup.sh
 
