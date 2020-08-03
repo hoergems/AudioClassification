@@ -21,7 +21,7 @@ bool HardwareStartup::startupSequence() {
 	//////////////////////////////////////////////////////////////////////////////
 	// Set the local IP and subnet mask
 	//////////////////////////////////////////////////////////////////////////////
-	std::string local_IP = "10.66.171.176";
+	std::string local_IP = "10.66.171.190";
 	std::string subnet_mask = "255.255.255.0";
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -111,16 +111,38 @@ bool HardwareStartup::startupSequence() {
 		numDevices = movoAPI_->GetDevices(devices, getDevicesResult);
 	}
 
+	/**cout << "serialNumber: " << devices[0].SerialNumber << endl;
+	cout << "model: " << devices[0].Model << endl;
+	cout << "versionMajor: " << devices[0].VersionMajor << endl;
+	cout << "versionMinor: " << devices[0].VersionMinor << endl;
+	cout << "versionRelease: " << devices[0].VersionRelease << endl;
+	cout << "deviceType: " << devices[0].DeviceType << endl;
+	cout << "deviceID: " << devices[0].DeviceID << endl;*/
+
+	KinovaDevice d;
+	std::string serialNumber = "WO510177-0";
+	strcpy(d.SerialNumber, serialNumber.c_str());
+	std::string model = "Spherical 7DOF Serv";	
+	strcpy(d.Model, model.c_str());
+	d.VersionMajor = 6;
+	d.VersionMinor = 2;
+	d.VersionRelease = 5;
+	d.DeviceType = 8;
+	d.DeviceID = 0;
+
 	if (numDevices != 1) {
 		cout << "Can't find primary device" << endl;
 		return 0;
 	}
 
+	cout << "numDevices: " << numDevices << endl;
+
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Set the active device to the arm
 	//////////////////////////////////////////////////////////////////////////////
-	int setResult = movoAPI_->SetActiveDevice(devices[0]);
+	//int setResult = movoAPI_->SetActiveDevice(devices[0]);
+	int setResult = movoAPI_->SetActiveDevice(d);
 	if (setResult != NO_ERROR_KINOVA) {
 		cout << "Couldn't set active device. Can't continue" << endl;
 		return 0;
