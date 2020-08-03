@@ -111,7 +111,7 @@ bool HardwareStartup::startupSequence() {
 		numDevices = movoAPI_->GetDevices(devices, getDevicesResult);
 	}
 
-#ifdef USE_ARM_HACK
+#ifdef ARM_HACK
 	KinovaDevice d;
 	std::string serialNumber = "WO510177-0";
 	strcpy(d.SerialNumber, serialNumber.c_str());
@@ -132,7 +132,7 @@ bool HardwareStartup::startupSequence() {
 	//////////////////////////////////////////////////////////////////////////////
 	// Set the active device to the arm
 	//////////////////////////////////////////////////////////////////////////////	
-#ifdef USE_ARM_HACK
+#ifdef ARM_HACK
 	int setResult = movoAPI_->SetActiveDevice(d);
 #else
 	int setResult = movoAPI_->SetActiveDevice(devices[0]);
