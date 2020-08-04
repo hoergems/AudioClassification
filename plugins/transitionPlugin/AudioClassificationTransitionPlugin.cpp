@@ -132,7 +132,9 @@ public :
                                     propagationRequest->currentState->getUserData()->as<AudioClassificationUserData>()->endEffectorPose,
                                     macroAction);
 
-        } else {
+        } 
+        else 
+        {
             // One of the end effector motion actions (X_PLUS, X_MINUS, Y_PLUS, Y_MINUS) is being executed
             nextJointAngles = applyEndEffectorVelocity_(currentStateVector, endEffectorVelocity);
         }
@@ -323,7 +325,35 @@ private:
         if (macroAction == 2) {
             // For the BANG action we assume that the resulting joint angles are equal
             // to the ones we got after moving the end effector to the cup position.
-            // So we actually don't have to do anything here                       
+            // So we actually don't have to do anything here
+
+            if (robotEnvironment_->isExecutionEnvironment())
+            {
+                movoRobotInterface_->closeGripper();
+                geometric::Pose newEndEffectorPose(LinkWorldPose(endEffectorLink_));
+                geometric::Pose pushVector(0.0, 0.0, endEffectorMotionDistance_, 0.0, 0.0, 0.0);
+                geometric::Pose newEndEffectorWorldPoseAfterPushing = pushVector + newEndEffectorPose;
+                VectorFloat endEffectorVelocity(6, 0.0);
+                endEffectorVelocity[0] = newEndEffectorWorldPoseAfterPushing.position.x() - newEndEffectorPose.position.x();
+                endEffectorVelocity[1] = newEndEffectorWorldPoseAfterPushing.position.y() - newEndEffectorPose.position.y();
+                endEffectorVelocity[2] = newEndEffectorWorldPoseAfterPushing.position.z() - newEndEffectorPose.position.z();
+                newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
+                
+                geometric::Pose newEndEffectorPose(LinkWorldPose(endEffectorLink_));
+                geometric::Pose pushVector(0.0, 0.0, -(endEffectorMotionDistance_), 0.0, 0.0, 0.0);
+                geometric::Pose newEndEffectorWorldPoseAfterPushing = pushVector + newEndEffectorPose;
+                VectorFloat endEffectorVelocity(6, 0.0);
+                endEffectorVelocity[0] = newEndEffectorWorldPoseAfterPushing.position.x() - newEndEffectorPose.position.x();
+                endEffectorVelocity[1] = newEndEffectorWorldPoseAfterPushing.position.y() - newEndEffectorPose.position.y();
+                endEffectorVelocity[2] = newEndEffectorWorldPoseAfterPushing.position.z() - newEndEffectorPose.position.z();
+                newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
+
+                movoRobotInterface_->openGripper();
+
+            }   
+
+
+
         }
 
         if (macroAction == 3 or macroAction == 4) {
