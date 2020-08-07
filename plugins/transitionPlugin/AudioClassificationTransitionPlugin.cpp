@@ -330,24 +330,12 @@ private:
             if (robotEnvironment_->isExecutionEnvironment())
             {
                 movoRobotInterface_->closeGripper();
-                geometric::Pose newEndEffectorPose(LinkWorldPose(endEffectorLink_));
-                geometric::Pose pushVector(0.0, 0.0, endEffectorMotionDistance_, 0.0, 0.0, 0.0);
-                geometric::Pose newEndEffectorWorldPoseAfterPushing = pushVector + newEndEffectorPose;
-                VectorFloat endEffectorVelocity(6, 0.0);
-                endEffectorVelocity[0] = newEndEffectorWorldPoseAfterPushing.position.x() - newEndEffectorPose.position.x();
-                endEffectorVelocity[1] = newEndEffectorWorldPoseAfterPushing.position.y() - newEndEffectorPose.position.y();
-                endEffectorVelocity[2] = newEndEffectorWorldPoseAfterPushing.position.z() - newEndEffectorPose.position.z();
-                newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
-                
-                geometric::Pose newEndEffectorPose(LinkWorldPose(endEffectorLink_));
-                geometric::Pose pushVector(0.0, 0.0, -(endEffectorMotionDistance_), 0.0, 0.0, 0.0);
-                geometric::Pose newEndEffectorWorldPoseAfterPushing = pushVector + newEndEffectorPose;
-                VectorFloat endEffectorVelocity(6, 0.0);
-                endEffectorVelocity[0] = newEndEffectorWorldPoseAfterPushing.position.x() - newEndEffectorPose.position.x();
-                endEffectorVelocity[1] = newEndEffectorWorldPoseAfterPushing.position.y() - newEndEffectorPose.position.y();
-                endEffectorVelocity[2] = newEndEffectorWorldPoseAfterPushing.position.z() - newEndEffectorPose.position.z();
-                newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
 
+                VectorFloat endEffectorVelocity(6, 0.0);
+                endEffectorVelocity[2] = endEffectorMotionDistance_;
+                newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
+                endEffectorVelocity[2] = -(endEffectorMotionDistance_);                
+                newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
                 movoRobotInterface_->openGripper();
 
             }   
