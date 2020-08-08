@@ -159,6 +159,12 @@ public :
         // REMOVE ME
         // LOGGING("Should run fine");
         // getchar();
+
+        auto userDataNew = makeUserDataGrasping();
+        propagationResult->nextState->setUserData(userDataNew);
+        propagationResult->collisionReport = static_cast<AudioClassificationUserData *>(propagationResult->nextState->getUserData().get())->collisionReport;
+    
+
         
         return propagationResult;
     }
@@ -179,6 +185,16 @@ private:
     FloatType endEffectorMotionDistance_ = 0.05;
 
 private:
+
+    RobotStateUserDataSharedPtr makeUserDataGrasping() const {
+        
+        RobotStateUserDataSharedPtr userData(new AudioClassificationUserData());
+        auto ud = static_cast<AudioClassificationUserData*>(userData.get());
+
+        ud->collisionReport = robotEnvironment_->getRobot()->makeDiscreteCollisionReportDirty();
+
+        return userData;
+    }    
 
     VectorFloat applyEndEffectorVelocity_(const VectorFloat &currentStateVector, const VectorFloat &endEffectorVelocity) const {
         auto tracIkSolver = static_cast<oppt::TracIKSolver *>(robotEnvironment_->getRobot()->getIKSolver());

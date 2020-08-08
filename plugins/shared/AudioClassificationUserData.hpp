@@ -23,6 +23,8 @@ public:
 		os << prefix << ": " << endEffectorPose.toGZPose();
 	}
 
+	CollisionReportSharedPtr collisionReport = nullptr;
+	
 };
 }
 

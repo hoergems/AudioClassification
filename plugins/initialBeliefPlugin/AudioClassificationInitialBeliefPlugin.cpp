@@ -108,9 +108,11 @@ public:
         unsigned int objectType = (*(objectPropertyDistribution_.get()))(*(randomEngine.get()));
         initialStateVector[10] = (FloatType)(objectType);
 
+        
+
         // Construct the initial state
         RobotStateSharedPtr initialState(new VectorState(initialStateVector));
-        initialState->setGazeboWorldState(initialWorldState);
+        initialState->setGazeboWorldState(initialWorldState);        
         initialState->setUserData(makeUserData_());
         return initialState;
     }
@@ -133,6 +135,7 @@ private:
     OpptUserDataSharedPtr makeUserData_() const {
         OpptUserDataSharedPtr userData(new AudioClassificationUserData);
         userData->as<AudioClassificationUserData>()->endEffectorPose = geometric::Pose(LinkWorldPose(endEffectorLink_));
+        userData->as<AudioClassificationUserData>()->collisionReport = std::make_shared<CollisionReport>();
         return userData;
     }
 

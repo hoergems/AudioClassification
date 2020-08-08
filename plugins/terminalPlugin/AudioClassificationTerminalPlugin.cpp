@@ -14,7 +14,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 #include <oppt/plugin/Plugin.hpp>
-
+#include "AudioClassificationUserData.hpp"
 namespace oppt
 {
 class AudioClassificationTerminalPlugin: public TerminalPlugin
@@ -41,6 +41,17 @@ public :
     }
 
     virtual bool isTerminal(const PropagationResultSharedPtr& propagationResult) override {
+        
+        auto userData = static_cast<AudioClassificationUserData*>(propagationResult->nextState->getUserData().get());
+        if (userData->collisionReport->collides) {
+
+            for (auto &collisionPair: userData->collisionReport->collisionPairs) 
+            {
+                cout<<collisionPair.first<<"  "<<collisionPair.second<<endl;
+            }
+
+        }        
+
         if (propagationResult->action) {
             VectorFloat actionVec = propagationResult->action->as<VectorAction>()->asVector();
             unsigned int binNumber = propagationResult->action->as<DiscreteVectorAction>()->getBinNumber();
