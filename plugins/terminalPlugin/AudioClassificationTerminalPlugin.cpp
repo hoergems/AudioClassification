@@ -47,7 +47,11 @@ public :
 
             for (auto &collisionPair: userData->collisionReport->collisionPairs) 
             {
-                cout<<collisionPair.first<<"  "<<collisionPair.second<<endl;
+                if ((collisionPair.first.compare("table::table_link") == 0) || (collisionPair.second.compare("table::table_link") == 0))
+                {
+
+                    return true;
+                }
             }
 
         }        
