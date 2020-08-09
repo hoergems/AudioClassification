@@ -30,7 +30,13 @@
       <uri>model://cup</uri>
       <pose>0.0 0.0 0.0 0 0 0</pose>
     </include>    
-        
+
+    <include>
+      <uri>model://table</uri>
+      <pose>0.77 0.0 0.35 0 0 0</pose>
+      <!-- <pose>0.77 0.0 0.237851 0 0 0</pose> -->
+    </include>        
+
     <light name='user_spot_light_0' type='spot'>
       <pose frame=''>-0.008974 0.005149 2 0 -0 0</pose>
       <diffuse>0.5 0.5 0.5 1</diffuse>
