@@ -124,6 +124,13 @@ public :
             break;
         }
 
+        if (robotEnvironment_->isExecutionEnvironment())
+        {
+            cout<<"Robot Execution : Press Enter to continue"<<endl;
+            getchar();
+        }
+
+
         VectorFloat nextJointAngles;
         if (macroAction != 0) {
             // A macro action is being executed
@@ -136,6 +143,7 @@ public :
         else 
         {
             // One of the end effector motion actions (X_PLUS, X_MINUS, Y_PLUS, Y_MINUS) is being executed
+
             nextJointAngles = applyEndEffectorVelocity_(currentStateVector, endEffectorVelocity);
         }
 
@@ -166,6 +174,11 @@ public :
         // REMOVE ME
         // LOGGING("Should run fine");
         // getchar();
+
+        auto userDataNew = makeUserDataGrasping();
+        propagationResult->nextState->setUserData(userDataNew);
+        propagationResult->collisionReport = static_cast<AudioClassificationUserData *>(propagationResult->nextState->getUserData().get())->collisionReport;
+
         
         return propagationResult;
     }
@@ -198,6 +211,16 @@ private:
         VectorFloat initialJointAngles(initialState.begin(), initialState.begin() + 7);        
         movoRobotInterface_->moveToInitialJointAngles(initialJointAngles);    
     }
+
+    RobotStateUserDataSharedPtr makeUserDataGrasping() const {
+        
+        RobotStateUserDataSharedPtr userData(new AudioClassificationUserData());
+        auto ud = static_cast<AudioClassificationUserData*>(userData.get());
+
+        ud->collisionReport = robotEnvironment_->getRobot()->makeDiscreteCollisionReportDirty();
+
+        return userData;
+    }    
 
     VectorFloat applyEndEffectorVelocity_(const VectorFloat &currentStateVector, const VectorFloat &endEffectorVelocity) const {
         auto tracIkSolver = static_cast<oppt::TracIKSolver *>(robotEnvironment_->getRobot()->getIKSolver());
@@ -330,7 +353,6 @@ private:
             if (robotEnvironment_->isExecutionEnvironment())
             {
                 movoRobotInterface_->closeGripper();
-
                 VectorFloat endEffectorVelocity(6, 0.0);
                 endEffectorVelocity[2] = endEffectorMotionDistance_;
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
@@ -339,8 +361,6 @@ private:
                 movoRobotInterface_->openGripper();
 
             }   
-
-
 
         }
 

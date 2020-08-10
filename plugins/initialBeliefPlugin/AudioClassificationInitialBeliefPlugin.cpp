@@ -133,6 +133,7 @@ private:
     OpptUserDataSharedPtr makeUserData_() const {
         OpptUserDataSharedPtr userData(new AudioClassificationUserData);
         userData->as<AudioClassificationUserData>()->endEffectorPose = geometric::Pose(LinkWorldPose(endEffectorLink_));
+        userData->as<AudioClassificationUserData>()->collisionReport = std::make_shared<CollisionReport>();
         return userData;
     }
 
