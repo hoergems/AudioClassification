@@ -353,6 +353,7 @@ private:
             if (robotEnvironment_->isExecutionEnvironment())
             {
                 movoRobotInterface_->closeGripper();
+                sleep(1);
                 VectorFloat endEffectorVelocity(6, 0.0);
                 endEffectorVelocity[2] = endEffectorMotionDistance_;
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
