@@ -126,7 +126,7 @@ public :
 
         if (robotEnvironment_->isExecutionEnvironment())
         {
-            cout<<"Robot Execution : Press Enter to continue"<<endl;
+            cout << "Robot Execution : Press Enter to continue" << endl;
             getchar();
         }
 
@@ -139,8 +139,8 @@ public :
                                     propagationRequest->currentState->getUserData()->as<AudioClassificationUserData>()->endEffectorPose,
                                     macroAction);
 
-        } 
-        else 
+        }
+        else
         {
             // One of the end effector motion actions (X_PLUS, X_MINUS, Y_PLUS, Y_MINUS) is being executed
 
@@ -149,19 +149,19 @@ public :
 
         // The first 7 dimensions of the next state vector are the new joint angles
         VectorFloat nextStateVector = nextJointAngles;
-        
+
 
         // The next 3 dimensions of the next state vector describe the relative position of
         // the cup with respect to the end effector
-        #ifdef GZ_GT_7
-            nextStateVector.push_back(cupLink_->WorldPose().Pos().X() - endEffectorLink_->WorldPose().Pos().X());
-            nextStateVector.push_back(cupLink_->WorldPose().Pos().Y() - endEffectorLink_->WorldPose().Pos().Y());
-            nextStateVector.push_back(cupLink_->WorldPose().Pos().Z() - endEffectorLink_->WorldPose().Pos().Z());
-        #else
-            nextStateVector.push_back(cupLink_->GetWorldPose().pos.x - endEffectorLink_->GetWorldPose().pos.x);
-            nextStateVector.push_back(cupLink_->GetWorldPose().pos.y - endEffectorLink_->GetWorldPose().pos.y);
-            nextStateVector.push_back(cupLink_->GetWorldPose().pos.z - endEffectorLink_->GetWorldPose().pos.z);
-        #endif
+#ifdef GZ_GT_7
+        nextStateVector.push_back(cupLink_->WorldPose().Pos().X() - endEffectorLink_->WorldPose().Pos().X());
+        nextStateVector.push_back(cupLink_->WorldPose().Pos().Y() - endEffectorLink_->WorldPose().Pos().Y());
+        nextStateVector.push_back(cupLink_->WorldPose().Pos().Z() - endEffectorLink_->WorldPose().Pos().Z());
+#else
+        nextStateVector.push_back(cupLink_->GetWorldPose().pos.x - endEffectorLink_->GetWorldPose().pos.x);
+        nextStateVector.push_back(cupLink_->GetWorldPose().pos.y - endEffectorLink_->GetWorldPose().pos.y);
+        nextStateVector.push_back(cupLink_->GetWorldPose().pos.z - endEffectorLink_->GetWorldPose().pos.z);
+#endif
 
         // Add the object property to the state vector (same as current state)
         nextStateVector.push_back(currentStateVector[10]);
@@ -179,7 +179,7 @@ public :
         propagationResult->nextState->setUserData(userDataNew);
         propagationResult->collisionReport = static_cast<AudioClassificationUserData *>(propagationResult->nextState->getUserData().get())->collisionReport;
 
-        
+
         return propagationResult;
     }
 
@@ -202,25 +202,25 @@ private:
     std::unique_ptr<MovoRobotInterface> movoRobotInterface_ = nullptr;
 
 private:
-    void initializeMovoInterface_() {        
+    void initializeMovoInterface_() {
         movoRobotInterface_ = std::unique_ptr<MovoRobotInterface>(new MovoRobotInterface);
         movoRobotInterface_->init();
 
         // Move the arm to the initial joint angles
         VectorFloat initialState = static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get())->initialState;
-        VectorFloat initialJointAngles(initialState.begin(), initialState.begin() + 7);        
-        movoRobotInterface_->moveToInitialJointAngles(initialJointAngles);    
+        VectorFloat initialJointAngles(initialState.begin(), initialState.begin() + 7);
+        movoRobotInterface_->moveToInitialJointAngles(initialJointAngles);
     }
 
     RobotStateUserDataSharedPtr makeUserDataGrasping() const {
-        
+
         RobotStateUserDataSharedPtr userData(new AudioClassificationUserData());
         auto ud = static_cast<AudioClassificationUserData*>(userData.get());
 
         ud->collisionReport = robotEnvironment_->getRobot()->makeDiscreteCollisionReportDirty();
 
         return userData;
-    }    
+    }
 
     VectorFloat applyEndEffectorVelocity_(const VectorFloat &currentStateVector, const VectorFloat &endEffectorVelocity, int action = 0) const {
         auto tracIkSolver = static_cast<oppt::TracIKSolver *>(robotEnvironment_->getRobot()->getIKSolver());
@@ -250,21 +250,21 @@ private:
         if ((l2norm < 0.01) && (action != 1)) 
         {
             GZPose endEffectorPose = LinkWorldPose(endEffectorLink_);
-            #ifdef GZ_GT_7
-                geometric::Pose newCupPose(endEffectorPose.Pos().X(),
-                                           endEffectorPose.Pos().Y(),
-                                           endEffectorPose.Pos().Z(),
-                                           0.0,
-                                           0.0,
-                                           0.0);
-            #else
-                geometric::Pose newCupPose(endEffectorPose.pos.x,
-                                           endEffectorPose.pos.y,
-                                           endEffectorPose.pos.z,
-                                           0.0,
-                                           0.0,
-                                           0.0);
-            #endif                
+#ifdef GZ_GT_7
+            geometric::Pose newCupPose(endEffectorPose.Pos().X(),
+                                       endEffectorPose.Pos().Y(),
+                                       endEffectorPose.Pos().Z(),
+                                       0.0,
+                                       0.0,
+                                       0.0);
+#else
+            geometric::Pose newCupPose(endEffectorPose.pos.x,
+                                       endEffectorPose.pos.y,
+                                       endEffectorPose.pos.z,
+                                       0.0,
+                                       0.0,
+                                       0.0);
+#endif
             cupLink_->SetWorldPose(newCupPose.toGZPose());
         }
 
@@ -288,7 +288,7 @@ private:
      */
     VectorFloat applyJointVelocities_(const VectorFloat &currentJointAngles, const VectorFloat &jointVelocities) const {
         if (robotEnvironment_->isExecutionEnvironment()) {
-            FloatType durationMS = 1000.0;            
+            FloatType durationMS = 1000.0;
             movoRobotInterface_->applyJointVelocities(jointVelocities, durationMS);
             return movoRobotInterface_->getCurrentJointAngles();
         }
@@ -331,7 +331,7 @@ private:
             endEffectorVelocity[2] = newEndEffectorWorldPoseAfterPushing.position.z() - newEndEffectorPose.position.z();
 
             // Apply this velocity to the end effector. This will result in a new set of joint angles that correspong
-            // to the resulting end effector pose (after pushing the object)            
+            // to the resulting end effector pose (after pushing the object)
             newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
 
             // We simply set the resulting world pose of the cup (after pushing it) to be equal to the resulting
@@ -354,15 +354,15 @@ private:
             if (robotEnvironment_->isExecutionEnvironment())
             {
                 movoRobotInterface_->closeGripper();
-                sleep(1);
+                std::this_thread::sleep_for(std::chrono::seconds(1));
                 VectorFloat endEffectorVelocity(6, 0.0);
                 endEffectorVelocity[2] = endEffectorMotionDistance_;
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
-                endEffectorVelocity[2] = -(endEffectorMotionDistance_);                
+                endEffectorVelocity[2] = -(endEffectorMotionDistance_);
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
                 movoRobotInterface_->openGripper();
-
-            }   
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
 
         }
 
@@ -457,13 +457,13 @@ private:
         return linkPtr;
     }
 
-    GZPose LinkWorldPose(const gazebo::physics::Link* link) const{
-    // Returns link world pose according to gazebo api enabled
-    #ifdef GZ_GT_7
+    GZPose LinkWorldPose(const gazebo::physics::Link* link) const {
+        // Returns link world pose according to gazebo api enabled
+#ifdef GZ_GT_7
         return link->WorldPose();
-    #else 
+#else
         return link->GetWorldPose();
-    #endif
+#endif
 
     }
 
