@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU General Public License along with OPPT.
  * If not, see http://www.gnu.org/licenses/.
  */
+
 #include <oppt/plugin/Plugin.hpp>
 #include "AudioClassificationUserData.hpp"
 
@@ -53,8 +54,6 @@ public :
 
                     return true;
                 }
-
-                
 
             }
 

@@ -144,7 +144,7 @@ public :
         {
             // One of the end effector motion actions (X_PLUS, X_MINUS, Y_PLUS, Y_MINUS) is being executed
 
-            nextJointAngles = applyEndEffectorVelocity_(currentStateVector, endEffectorVelocity);
+            nextJointAngles = applyEndEffectorVelocity_(currentStateVector, endEffectorVelocity, actionBinNumber);
         }
 
         // The first 7 dimensions of the next state vector are the new joint angles
@@ -222,7 +222,7 @@ private:
         return userData;
     }    
 
-    VectorFloat applyEndEffectorVelocity_(const VectorFloat &currentStateVector, const VectorFloat &endEffectorVelocity) const {
+    VectorFloat applyEndEffectorVelocity_(const VectorFloat &currentStateVector, const VectorFloat &endEffectorVelocity, int action = 0) const {
         auto tracIkSolver = static_cast<oppt::TracIKSolver *>(robotEnvironment_->getRobot()->getIKSolver());
         VectorFloat currentJointAngles = getCurrentJointAngles_(currentStateVector);
 
@@ -247,7 +247,8 @@ private:
         // TODO: Make sure the cup remains in its current positions when the end effector
         // moves away from the cup
         FloatType l2norm = sqrt(std::inner_product(relativeCupPosition.begin(), relativeCupPosition.end(), relativeCupPosition.begin(), 0.0));
-        if (l2norm < 0.01) {
+        if ((l2norm < 0.01) && (action != 1)) 
+        {
             GZPose endEffectorPose = LinkWorldPose(endEffectorLink_);
             #ifdef GZ_GT_7
                 geometric::Pose newCupPose(endEffectorPose.Pos().X(),
