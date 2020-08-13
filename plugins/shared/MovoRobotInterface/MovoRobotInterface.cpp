@@ -26,12 +26,10 @@ void MovoRobotInterface::moveToInitialJointAngles(const VectorFloat &initialJoin
 	openGripper();
 
 	VectorFloat currentJointAngles = getCurrentJointAngles();
-
 	FloatType dist = math::euclideanDistance<FloatType>(currentJointAngles, initialJointAngles);
 	cout << "dist: " << dist << endl;
 	if (dist < 0.02) {
-		LOGGING("Arm is already at the initial configuration");
-		getchar();
+		LOGGING("Arm is already at the initial configuration");		
 		return;
 	}
 
@@ -56,7 +54,7 @@ void MovoRobotInterface::moveToInitialJointAngles(const VectorFloat &initialJoin
 	targetJointAngles = initialJointAngles;
 	sendTargetJointAngles_(targetJointAngles, stepDuration);
 
-	LOGGING("Done");
+	LOGGING("Done. Press enter to continue");
 	getchar();
 
 }
