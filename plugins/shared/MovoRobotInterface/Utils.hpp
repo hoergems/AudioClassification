@@ -55,20 +55,20 @@ inline VectorFloat toDegreesPosition(const VectorFloat &jointAngles) {
 		ERROR("Joint angles has wrong format");
 	VectorFloat resJointAngles(NUM_JOINTS, 0.0);
 	if (NUM_JOINTS == 6) {
-		resJointAngles[0] = jointAngles[0] * 180.0 / M_PI;
-		resJointAngles[1] = (jointAngles[1] * 180.0 / M_PI) + 180.0;
-		resJointAngles[2] = (jointAngles[2] * 180.0 / M_PI) + 180.0;
-		resJointAngles[3] = jointAngles[3] * 180.0 / M_PI;
-		resJointAngles[4] = jointAngles[4] * 180.0 / M_PI;
-		resJointAngles[5] = jointAngles[5] * 180.0 / M_PI;
+		resJointAngles[0] = math::radianToDegrees(jointAngles[0]);
+		resJointAngles[1] = math::radianToDegrees(jointAngles[1]) + 180.0;
+		resJointAngles[2] = math::radianToDegrees(jointAngles[2]) + 180.0;
+		resJointAngles[3] = math::radianToDegrees(jointAngles[3]);
+		resJointAngles[4] = math::radianToDegrees(jointAngles[4]);
+		resJointAngles[5] = math::radianToDegrees(jointAngles[5]);
 	} else {
-		resJointAngles[0] = jointAngles[0] * 180.0 / M_PI;
-		resJointAngles[1] = (jointAngles[1] * 180.0 / M_PI) + 180.0;
-		resJointAngles[2] = jointAngles[2] * 180.0 / M_PI;
-		resJointAngles[3] = (jointAngles[3] * 180.0 / M_PI) + 180.0;
-		resJointAngles[4] = jointAngles[4] * 180.0 / M_PI;
-		resJointAngles[5] = (jointAngles[5] * 180.0 / M_PI) + 180.0;
-		resJointAngles[6] = jointAngles[6] * 180.0 / M_PI;
+		resJointAngles[0] = math::radianToDegrees(math::unwrapAngle(jointAngles[0]));
+		resJointAngles[1] = math::radianToDegrees(jointAngles[1]) + 180.0;		
+		resJointAngles[2] = math::radianToDegrees(math::unwrapAngle(jointAngles[2]));
+		resJointAngles[3] = math::radianToDegrees(jointAngles[3]) + 180.0;
+		resJointAngles[4] = math::radianToDegrees(math::unwrapAngle(jointAngles[4]));
+		resJointAngles[5] = math::radianToDegrees(jointAngles[5]) + 180.0;
+		resJointAngles[6] = math::radianToDegrees(math::unwrapAngle(jointAngles[6]));
 	}
 	return resJointAngles;
 }
@@ -80,7 +80,7 @@ inline VectorFloat toDegreesVelocity(const VectorFloat &velocity) {
 	}
 	VectorFloat res(NUM_JOINTS, 0.0);
 	for (size_t i = 0; i != NUM_JOINTS; ++i) {
-		res[i] = velocity[i] * 180.0 / M_PI;
+		res[i] = math::radianToDegrees(velocity[i]);
 	}
 
 	return res;
@@ -91,20 +91,20 @@ inline VectorFloat toRadianPosition(const VectorFloat &jointAngles) {
 		ERROR("Joint angles has wrong format");
 	VectorFloat resJointAngles(NUM_JOINTS, 0.0);
 	if (NUM_JOINTS == 6) {
-		resJointAngles[0] = jointAngles[0] * M_PI / 180.0;
-		resJointAngles[1] = (jointAngles[1] - 180.0) * M_PI / 180.0;
-		resJointAngles[2] = (jointAngles[2] - 180.0) * M_PI / 180.0;
-		resJointAngles[3] = jointAngles[3] * M_PI / 180.0;
-		resJointAngles[4] = jointAngles[4] * M_PI / 180.0;
-		resJointAngles[5] = jointAngles[5] * M_PI / 180.0;
+		resJointAngles[0] = math::degreesToRadian(jointAngles[0]);
+		resJointAngles[1] = math::degreesToRadian(jointAngles[1] - 180.0);
+		resJointAngles[2] = math::degreesToRadian(jointAngles[2] - 180.0);
+		resJointAngles[3] = math::degreesToRadian(jointAngles[3]);
+		resJointAngles[4] = math::degreesToRadian(jointAngles[4]);
+		resJointAngles[5] = math::degreesToRadian(jointAngles[5]);
 	} else {
-		resJointAngles[0] = jointAngles[0] * M_PI / 180.0;
-		resJointAngles[1] = (jointAngles[1] - 180.0) * M_PI / 180.0;
-		resJointAngles[2] = jointAngles[2] * M_PI / 180.0;
-		resJointAngles[3] = (jointAngles[3] - 180.0) * M_PI / 180.0;
-		resJointAngles[4] = jointAngles[4] * M_PI / 180.0;
-		resJointAngles[5] = (jointAngles[5] - 180.0) * M_PI / 180.0;
-		resJointAngles[6] = jointAngles[6] * M_PI / 180.0;
+		resJointAngles[0] = math::wrapAngle(math::degreesToRadian(jointAngles[0]));
+		resJointAngles[1] = math::degreesToRadian(jointAngles[1] - 180.0);
+		resJointAngles[2] = math::wrapAngle(math::degreesToRadian(jointAngles[2]));
+		resJointAngles[3] = math::degreesToRadian(jointAngles[3] - 180.0);
+		resJointAngles[4] = math::wrapAngle(math::degreesToRadian(jointAngles[4]));
+		resJointAngles[5] = math::degreesToRadian(jointAngles[5] - 180.0);
+		resJointAngles[6] = math::wrapAngle(math::degreesToRadian(jointAngles[6]));
 	}
 
 	return resJointAngles;
@@ -115,7 +115,7 @@ inline VectorFloat toRadianVelocity(const VectorFloat &velocity) {
 		ERROR("Velocity has wrong format");
 	VectorFloat res(NUM_JOINTS, 0.0);
 	for (size_t i = 0; i != NUM_JOINTS; ++i) {
-		res[i] = velocity[i] * M_PI / 180.0;
+		res[i] = math::degreesToRadian(velocity[i]);
 	}
 
 	return res;

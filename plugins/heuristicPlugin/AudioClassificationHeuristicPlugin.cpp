@@ -29,22 +29,14 @@ public:
 
     virtual ~AudioClassificationHeuristicPlugin() = default;
 
-    virtual bool load(RobotEnvironment* const robotEnvironment,
-                      const std::string& optionsFile) override {
-        //parseOptions_<LightDarkHeuristicOptions>(optionsFile);        
+    virtual bool load(const std::string& optionsFile) override {
         optionsFile_ = optionsFile;        
         return true;
     }
 
     virtual double getHeuristicValue(const HeuristicInfo* heuristicInfo) const override {
         return 0.0;        
-    }
-
-    virtual HeuristicPluginSharedPtr clone(RobotEnvironment* const robotEnvironment) const override {
-        std::shared_ptr<HeuristicPlugin> clonedPlugin(new AudioClassificationHeuristicPlugin());
-        clonedPlugin->load(robotEnvironment, optionsFile_);
-        return clonedPlugin;
-    }
+    }    
 
 private:
     std::string optionsFile_;

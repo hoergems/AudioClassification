@@ -28,8 +28,7 @@ public :
 
     virtual ~AudioClassificationTerminalPlugin() = default;
 
-    virtual bool load(RobotEnvironment* const robotEnvironment, const std::string& optionsFile) override {
-        robotEnvironment_ = robotEnvironment;
+    virtual bool load(const std::string& optionsFile) override {
         return true;
     }
 
@@ -71,9 +70,6 @@ public :
 
         return false;
     }
-
-private:
-    const RobotEnvironment* robotEnvironment_;
 };
 
 OPPT_REGISTER_TERMINAL_PLUGIN(AudioClassificationTerminalPlugin)

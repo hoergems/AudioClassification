@@ -27,9 +27,7 @@ public :
 
     virtual ~AudioClassificationRewardPlugin() = default;
 
-    virtual bool load(RobotEnvironment* const robotEnvironment,
-                      const std::string& optionsFile) override {
-        robotEnvironment_ = robotEnvironment;
+    virtual bool load(const std::string& optionsFile) override {
         return true;
     }
 
@@ -75,9 +73,6 @@ public :
         return std::make_pair(0.0,
                               0.0);
     }
-
-private:
-    const RobotEnvironment* robotEnvironment_;
 };
 
 OPPT_REGISTER_REWARD_PLUGIN(AudioClassificationRewardPlugin)

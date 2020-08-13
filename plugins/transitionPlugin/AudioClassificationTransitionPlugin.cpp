@@ -34,11 +34,10 @@ public :
 
     virtual ~AudioClassificationTransitionPlugin() = default;
 
-    virtual bool load(RobotEnvironment* const robotEnvironment, const std::string& optionsFile) override {
-        robotEnvironment_ = robotEnvironment;
+    virtual bool load(const std::string& optionsFile) override {        
         parseOptions_<AudioClassificationTransitionPluginOptions>(optionsFile);
         auto options = static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get());
-        auto actionSpace = robotEnvironment->getRobot()->getActionSpace();
+        auto actionSpace = robotEnvironment_->getRobot()->getActionSpace();
 
         // Setup a custom action discretizer.
         // This action discretizer will generate 8 actions. See AudioClassificationActionDiscretizer.hpp
@@ -183,8 +182,7 @@ public :
         return propagationResult;
     }
 
-private:
-    const RobotEnvironment* robotEnvironment_;
+private:  
 
     /** @brief A pointer to the end effector link */
     gazebo::physics::Link *endEffectorLink_ = nullptr;
@@ -203,7 +201,7 @@ private:
 
 private:
     void initializeMovoInterface_() {
-        movoRobotInterface_ = std::unique_ptr<MovoRobotInterface>(new MovoRobotInterface);
+        movoRobotInterface_ = std::unique_ptr<MovoRobotInterface>(new MovoRobotInterface(robotEnvironment_));
         movoRobotInterface_->init();
 
         // Move the arm to the initial joint angles
