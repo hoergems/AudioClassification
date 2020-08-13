@@ -35,17 +35,17 @@ public :
 
     virtual ~AudioClassificationObservationPluginExecution() = default;
 
-    virtual bool load(RobotEnvironment* const robotEnvironment, const std::string& optionsFile) override {
-        robotEnvironment_ = robotEnvironment;        
+    virtual bool load(const std::string& optionsFile) override {
+        nodeHandle_ = std::make_unique<ros::NodeHandle>();
+        serviceClient_ =
+            std::make_unique<ros::ServiceClient>((*(nodeHandle_.get())).serviceClient<ObservationService::Observation>("Observations"));
         return true;
     }
 
     virtual ObservationResultSharedPtr getObservation(const ObservationRequest* observationRequest) const override {
-
-        char **argv  = nullptr;
         int x = 1;
-        ros::NodeHandle n;
-        ros::ServiceClient client = n.serviceClient<ObservationService::Observation>("Observations");
+        //ros::NodeHandle nodeHandle_;
+
 
         ObservationResultSharedPtr observationResult(new ObservationResult);
         VectorFloat observationVec({0.0});
@@ -63,11 +63,11 @@ public :
             {
                 ObservationService::Observation srv;
                 srv.request.state = atoll("0");
-                srv.request.action = atoll("0");
-                if (client.call(srv))
+                srv.request.action = atoll("0");                
+                if ((*(serviceClient_.get())).call(srv))
                 {
                     response = (int)srv.response.observation;
-                    
+
                 }
 
                 // if (sample <= 0.1)
@@ -82,10 +82,10 @@ public :
                 ObservationService::Observation srv;
                 srv.request.state = atoll("1");
                 srv.request.action = atoll("0");
-                if (client.call(srv))
+                if ((*(serviceClient_.get())).call(srv))
                 {
                     response = (int)srv.response.observation;
-                    
+
                 }
 
                 // if (sample <= 0.1)
@@ -103,10 +103,10 @@ public :
                 ObservationService::Observation srv;
                 srv.request.state = atoll("0");
                 srv.request.action = atoll("1");
-                if (client.call(srv))
+                if ((*(serviceClient_.get())).call(srv))
                 {
                     response = (int)srv.response.observation;
-                    
+
                 }
 
                 // if (sample <= 0.1)
@@ -122,10 +122,10 @@ public :
                 ObservationService::Observation srv;
                 srv.request.state = atoll("1");
                 srv.request.action = atoll("1");
-                if (client.call(srv))
+                if ((*(serviceClient_.get())).call(srv))
                 {
                     response = (int)srv.response.observation;
-                    
+
                 }
 
                 // if (sample <= 0.7)
@@ -161,12 +161,12 @@ public :
             {
                 if (observationVec[observationVec.size() - 1] == 1)
                     return 0.7;
-                else if (observationVec[observationVec.size() -1] == 0)
+                else if (observationVec[observationVec.size() - 1] == 0)
                     return 0.1;
                 else
                     return 0.2;
             }
-        } 
+        }
         else if (binNumber == 5) //BANG ACTION
         {
             if (stateVec[stateVec.size() - 1] == 0) //PLASTIC CUP
@@ -182,11 +182,11 @@ public :
             {
                 if (observationVec[observationVec.size() - 1] == 0)
                     return 0.7;
-                else if (observationVec[observationVec.size() -1] == 1)
+                else if (observationVec[observationVec.size() - 1] == 1)
                     return 0.2;
                 else
                     return 0.1;
-            }            
+            }
         }
         else
         {
@@ -195,12 +195,14 @@ public :
             else
                 ERROR("IMPOSSIBLE");
         }
-    }   
+    }
 
 private:
-    const RobotEnvironment* robotEnvironment_;
-
     mutable std::uniform_real_distribution<FloatType> dist_;
+
+    std::unique_ptr<ros::NodeHandle> nodeHandle_ = nullptr;
+
+    std::unique_ptr<ros::ServiceClient> serviceClient_ = nullptr;
 };
 
 OPPT_REGISTER_OBSERVATION_PLUGIN(AudioClassificationObservationPluginExecution)

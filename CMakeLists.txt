@@ -14,6 +14,11 @@ if (NOT CMAKE_BUILD_TYPE MATCHES RELWITHDEBINFO AND NOT CMAKE_BUILD_TYPE MATCHES
    message(FATAL_ERROR "${CMAKE_BUILD_TYPE} is not a valid build type. Supported types are Debug, Release and RelWithDebInfo (default)")
 endif()
 
+option(USE_ARM_HACK "Use arm hack" OFF)
+if (USE_ARM_HACK)
+  add_definitions(-DARM_HACK=true)
+endif()
+
 add_definitions(-DUSE_DOUBLE_PRECISION=true)
 include(FindPkgConfig)
 include(GNUInstallDirs)
