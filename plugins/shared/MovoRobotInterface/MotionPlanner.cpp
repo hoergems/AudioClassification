@@ -126,13 +126,13 @@ void MovoMotionPlanner::setupRRTConnect_() {
 	VectorFloat upper(7, 0.0);
 	VectorFloat lower(7, 0.0);
 	for (size_t i = 0; i != joints.size(); ++i) {
-//#ifdef GZ_GT_7
+#ifdef GZ_GT_7
 		upper[i] = joints[i]->UpperLimit(0);
 		lower[i] = joints[i]->LowerLimit(0);
-//#else
-//		upper[i] = joints[i]->GetUpperLimit().Radian();
-//		lower[i] = joints[i]->GetLowerLimit().Radian();
-//#endif
+#else
+		upper[i] = joints[i]->GetUpperLimit(0).Radian();
+		lower[i] = joints[i]->GetLowerLimit(0).Radian();
+#endif
 	}
 	auto randomEngine = robotEnvironment_->getRobot()->getRandomEngine();
 	uniformDistribution_ = std::make_unique<UniformDistribution<FloatType>>(upper, lower, randomEngine);
