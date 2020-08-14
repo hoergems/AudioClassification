@@ -33,11 +33,6 @@ void MovoRobotInterface::moveToInitialJointAngles(const VectorFloat &initialJoin
 }
 
 void MovoRobotInterface::openGripper() {
-	if (gripperClosed_ == false) {
-		// Gripper is already open
-		return;
-	}
-
 	AngularPosition currentPosition;
 	currentPosition.InitStruct();
 	int getAngularPositionRes = 0;
@@ -57,15 +52,9 @@ void MovoRobotInterface::openGripper() {
 	while (moveRes != NO_ERROR_KINOVA) {
 		moveRes = movoAPI_->SendBasicTrajectory(trajectoryPoint);
 	}
-
-	gripperClosed_ = false;	
 }
 
 void MovoRobotInterface::closeGripper() {
-	if (gripperClosed_) {
-		// Gripper is already closed
-		return;
-	}
 	AngularPosition currentPosition;
 	currentPosition.InitStruct();
 
@@ -87,8 +76,6 @@ void MovoRobotInterface::closeGripper() {
 	while (moveRes != NO_ERROR_KINOVA) {
 		moveRes = movoAPI_->SendBasicTrajectory(trajectoryPoint);
 	}
-
-	gripperClosed_ = true;	
 }
 
 VectorFloat MovoRobotInterface::getCurrentJointAngles() const {
@@ -120,11 +107,13 @@ bool MovoRobotInterface::applyJointVelocities(const VectorFloat &jointVelocities
 	if (jointVelocities.size() != NUM_JOINTS)
 		ERROR("Vector of joint angles has wring size. Should be " + std::to_string(NUM_JOINTS));
 
+	movoAPI_->EraseAllTrajectories();
+
 	FloatType elapsedSinceStart = 0.0;
 	auto timeStart = std::chrono::system_clock::now();
 	while (true) {
 		sendTargetJointVelocities_(jointVelocities);
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		elapsedSinceStart = (FloatType)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timeStart).count());
 		if (elapsedSinceStart >= durationMS)
 			break;

@@ -66,7 +66,7 @@ public :
         }
         else // MOVEMENT ACTIONS
         {
-            return -0.5;
+            return -1.0;
         }
 
     }
