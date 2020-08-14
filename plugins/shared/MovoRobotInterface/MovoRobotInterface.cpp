@@ -14,9 +14,9 @@ MovoRobotInterface::MovoRobotInterface(const RobotEnvironment* robotEnvironment)
 
 }
 
-void MovoRobotInterface::init() {
+void MovoRobotInterface::init(const std::string &localIP) {
 	HardwareStartup hardwareStartup;
-	if (hardwareStartup.startupSequence() == false)
+	if (hardwareStartup.startupSequence(localIP) == false)
 		ERROR("Couldn't execute startup sequence");
 	movoAPI_ = std::move(hardwareStartup.releaseMovoAPI());
 }
@@ -33,7 +33,7 @@ void MovoRobotInterface::moveToInitialJointAngles(const VectorFloat &initialJoin
 		return;
 	}
 
-	TrajectorySharedPtr trajectory = movoMotionPlanner_->solve(currentJointAngles, initialJointAngles, 100.0);	
+	TrajectorySharedPtr trajectory = movoMotionPlanner_->solve(currentJointAngles, initialJointAngles, 10.0);	
 	if (!trajectory)
 		ERROR("Couldn't find a trajectory to the initial state. Move the arm manually towards the initial configuration and try again.");
 

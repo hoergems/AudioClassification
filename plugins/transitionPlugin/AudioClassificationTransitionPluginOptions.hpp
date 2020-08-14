@@ -22,49 +22,54 @@ namespace oppt
 class AudioClassificationTransitionPluginOptions: public PluginOptions
 {
 public:
-    AudioClassificationTransitionPluginOptions() = default;
+  AudioClassificationTransitionPluginOptions() = default;
 
-    virtual ~AudioClassificationTransitionPluginOptions() = default;
+  virtual ~AudioClassificationTransitionPluginOptions() = default;
 
-    std::string urdfFile = "";
+  std::string urdfFile = "";
 
-    std::string baseLink = "";
+  std::string baseLink = "";
 
-    std::string endEffectorLink = "";
+  std::string endEffectorLink = "";
 
-    std::string cupLink = "";
+  std::string cupLink = "";
 
-    FloatType endEffectorMotionDistance = 0.0;
+  FloatType endEffectorMotionDistance = 0.0;
 
-    VectorFloat initialState;
+  VectorFloat initialState;
 
-    static std::unique_ptr<options::OptionParser> makeParser() {
-        std::unique_ptr<options::OptionParser> parser =
-            PluginOptions::makeParser();
-        addAudioClassificationTransitionPluginOptions(parser.get());
-        return std::move(parser);
-    }
+  std::string localIP = "";
 
-    static void addAudioClassificationTransitionPluginOptions(options::OptionParser* parser) {
-        parser->addOption<std::string>("movoOptions",
-                                       "urdfFile",
-                                       &AudioClassificationTransitionPluginOptions::urdfFile);
-        parser->addOption<std::string>("movoOptions",
-                                       "baseLink",
-                                       &AudioClassificationTransitionPluginOptions::baseLink);
-        parser->addOption<std::string>("movoOptions",
-                                       "endEffectorLink",
-                                       &AudioClassificationTransitionPluginOptions::endEffectorLink);
-        parser->addOption<std::string>("movoOptions",
-                                       "cupLink",
-                                       &AudioClassificationTransitionPluginOptions::cupLink);
-        parser->addOption<FloatType>("transitionPluginOptions",
-                                     "endEffectorMotionDistance",
-                                     &AudioClassificationTransitionPluginOptions::endEffectorMotionDistance);
-        parser->addOption<VectorFloat>("initialBeliefOptions",
-                                       "initialState",
-                                       &AudioClassificationTransitionPluginOptions::initialState);
-    }
+  static std::unique_ptr<options::OptionParser> makeParser() {
+    std::unique_ptr<options::OptionParser> parser =
+      PluginOptions::makeParser();
+    addAudioClassificationTransitionPluginOptions(parser.get());
+    return std::move(parser);
+  }
+
+  static void addAudioClassificationTransitionPluginOptions(options::OptionParser* parser) {
+    parser->addOption<std::string>("movoOptions",
+                                   "urdfFile",
+                                   &AudioClassificationTransitionPluginOptions::urdfFile);
+    parser->addOption<std::string>("movoOptions",
+                                   "baseLink",
+                                   &AudioClassificationTransitionPluginOptions::baseLink);
+    parser->addOption<std::string>("movoOptions",
+                                   "endEffectorLink",
+                                   &AudioClassificationTransitionPluginOptions::endEffectorLink);
+    parser->addOption<std::string>("movoOptions",
+                                   "cupLink",
+                                   &AudioClassificationTransitionPluginOptions::cupLink);
+    parser->addOption<std::string>("movoOptions",
+                                   "localIP",
+                                   &AudioClassificationTransitionPluginOptions::localIP);
+    parser->addOption<FloatType>("transitionPluginOptions",
+                                 "endEffectorMotionDistance",
+                                 &AudioClassificationTransitionPluginOptions::endEffectorMotionDistance);
+    parser->addOption<VectorFloat>("initialBeliefOptions",
+                                   "initialState",
+                                   &AudioClassificationTransitionPluginOptions::initialState);
+  }
 
 };
 }

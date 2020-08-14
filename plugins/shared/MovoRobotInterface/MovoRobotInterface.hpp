@@ -17,7 +17,7 @@ public:
 	/**
 	 * @brief Initializes the interface to the robot by performing a hardware startup
 	 */
-	void init();
+	void init(const std::string &localIP);
 
 	/**
 	 * @brief Get the current joint angles of the robot

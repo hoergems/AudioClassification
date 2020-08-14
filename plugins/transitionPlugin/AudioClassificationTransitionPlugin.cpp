@@ -34,7 +34,7 @@ public :
 
     virtual ~AudioClassificationTransitionPlugin() = default;
 
-    virtual bool load(const std::string& optionsFile) override {        
+    virtual bool load(const std::string& optionsFile) override {
         parseOptions_<AudioClassificationTransitionPluginOptions>(optionsFile);
         auto options = static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get());
         auto actionSpace = robotEnvironment_->getRobot()->getActionSpace();
@@ -180,7 +180,7 @@ public :
         return propagationResult;
     }
 
-private:  
+private:
 
     /** @brief A pointer to the end effector link */
     gazebo::physics::Link *endEffectorLink_ = nullptr;
@@ -199,24 +199,26 @@ private:
 
 private:
     void initializeMovoInterface_() {
+        std::string localIP =
+            static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get())->localIP;
         movoRobotInterface_ = std::unique_ptr<MovoRobotInterface>(new MovoRobotInterface(robotEnvironment_));
-        movoRobotInterface_->init();
+        movoRobotInterface_->init(localIP);
 
         // Move the arm to the initial joint angles
         VectorFloat initialState = static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get())->initialState;
         VectorFloat initialJointAngles(initialState.begin(), initialState.begin() + 7);
         movoRobotInterface_->moveToInitialJointAngles(initialJointAngles);
-    }    
+    }
 
     RobotStateUserDataSharedPtr makeUserDataGrasping() const {
-        
+
         RobotStateUserDataSharedPtr userData(new AudioClassificationUserData());
         auto ud = static_cast<AudioClassificationUserData*>(userData.get());
 
         ud->collisionReport = robotEnvironment_->getRobot()->makeDiscreteCollisionReportDirty();
 
         return userData;
-    }    
+    }
 
     VectorFloat applyEndEffectorVelocity_(const VectorFloat &currentStateVector, const VectorFloat &endEffectorVelocity) const {
         auto tracIkSolver = static_cast<oppt::TracIKSolver *>(robotEnvironment_->getRobot()->getIKSolver());
