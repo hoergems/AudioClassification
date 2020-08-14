@@ -47,8 +47,6 @@ public:
 private:
 	std::unique_ptr<movo::MovoAPI> movoAPI_ = nullptr;
 
-	bool gripperClosed_ = false;
-
 	const RobotEnvironment *robotEnvironment_ = nullptr;
 
 	std::unique_ptr<MovoMotionPlanner> movoMotionPlanner_ = nullptr;

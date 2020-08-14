@@ -60,11 +60,6 @@ void MovoRobotInterface::moveToInitialJointAngles(const VectorFloat &initialJoin
 }
 
 void MovoRobotInterface::openGripper() {
-	if (gripperClosed_ == false) {
-		// Gripper is already open
-		return;
-	}
-
 	AngularPosition currentPosition;
 	currentPosition.InitStruct();
 	int getAngularPositionRes = 0;
@@ -83,16 +78,10 @@ void MovoRobotInterface::openGripper() {
 	int moveRes = 0;
 	while (moveRes != NO_ERROR_KINOVA) {
 		moveRes = movoAPI_->SendBasicTrajectory(trajectoryPoint);
-	}
-
-	gripperClosed_ = false;
+	}	
 }
 
-void MovoRobotInterface::closeGripper() {
-	if (gripperClosed_) {
-		// Gripper is already closed
-		return;
-	}
+void MovoRobotInterface::closeGripper() {	
 	AngularPosition currentPosition;
 	currentPosition.InitStruct();
 
@@ -113,9 +102,7 @@ void MovoRobotInterface::closeGripper() {
 	int moveRes = 0;
 	while (moveRes != NO_ERROR_KINOVA) {
 		moveRes = movoAPI_->SendBasicTrajectory(trajectoryPoint);
-	}
-
-	gripperClosed_ = true;
+	}	
 }
 
 VectorFloat MovoRobotInterface::getCurrentJointAngles() const {
@@ -138,6 +125,7 @@ bool MovoRobotInterface::sendTargetJointAngles_(const VectorFloat &jointAngles, 
 	if (jointAngles.size() != NUM_JOINTS)
 		ERROR("Vector of joint angles has wrong size. Should be " + std::to_string(NUM_JOINTS));
 
+	movoAPI_->EraseAllTrajectories();
 	VectorFloat currentJointAngles = getCurrentJointAngles();
 	VectorFloat jointVelocities = oppt::scaleVector(oppt::subtractVectors(jointAngles, currentJointAngles), 1000.0 / durationMS);
 	return applyJointVelocities(jointVelocities, durationMS);
