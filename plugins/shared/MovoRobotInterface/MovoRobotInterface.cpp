@@ -134,7 +134,8 @@ bool MovoRobotInterface::sendTargetJointAngles_(const VectorFloat &jointAngles, 
 bool MovoRobotInterface::applyJointVelocities(const VectorFloat &jointVelocities, const FloatType &durationMS) const {
 	if (jointVelocities.size() != NUM_JOINTS)
 		ERROR("Vector of joint angles has wring size. Should be " + std::to_string(NUM_JOINTS));
-
+	movoAPI_->EraseAllTrajectories();
+	
 	FloatType elapsedSinceStart = 0.0;
 	auto timeStart = std::chrono::system_clock::now();
 	while (true) {
