@@ -6,7 +6,7 @@ HardwareStartup::HardwareStartup():
 
 }
 
-bool HardwareStartup::startupSequence() {
+bool HardwareStartup::startupSequence(const std::string &localIP) {
 	cout << "Execute startup sequence" << endl;
 	if (startupSequenceFinished_) {
 		cout << "Startup sequence has already finshed" << endl;
@@ -21,14 +21,13 @@ bool HardwareStartup::startupSequence() {
 	//////////////////////////////////////////////////////////////////////////////
 	// Set the local IP and subnet mask
 	//////////////////////////////////////////////////////////////////////////////
-	std::string local_IP = "10.66.171.190";
 	std::string subnet_mask = "255.255.255.0";
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Setup the ethernet comm config for the left arm
 	//////////////////////////////////////////////////////////////////////////////
 	EthernetCommConfig config;
-	config.localIpAddress = inet_addr(local_IP.c_str());
+	config.localIpAddress = inet_addr(localIP.c_str());
 	config.subnetMask = inet_addr(subnet_mask.c_str());
 
 	// Left arm

@@ -14,9 +14,9 @@ MovoRobotInterface::MovoRobotInterface(const RobotEnvironment* robotEnvironment)
 
 }
 
-void MovoRobotInterface::init() {
+void MovoRobotInterface::init(const std::string &localIP) {
 	HardwareStartup hardwareStartup;
-	if (hardwareStartup.startupSequence() == false)
+	if (hardwareStartup.startupSequence(localIP) == false)
 		ERROR("Couldn't execute startup sequence");
 	movoAPI_ = std::move(hardwareStartup.releaseMovoAPI());
 }
@@ -33,7 +33,7 @@ void MovoRobotInterface::moveToInitialJointAngles(const VectorFloat &initialJoin
 		return;
 	}
 
-	TrajectorySharedPtr trajectory = movoMotionPlanner_->solve(currentJointAngles, initialJointAngles, 100.0);	
+	TrajectorySharedPtr trajectory = movoMotionPlanner_->solve(currentJointAngles, initialJointAngles, 10.0);	
 	if (!trajectory)
 		ERROR("Couldn't find a trajectory to the initial state. Move the arm manually towards the initial configuration and try again.");
 
@@ -78,6 +78,7 @@ void MovoRobotInterface::openGripper() {
 	int moveRes = 0;
 	while (moveRes != NO_ERROR_KINOVA) {
 		moveRes = movoAPI_->SendBasicTrajectory(trajectoryPoint);
+
 	}
 
 }
@@ -127,6 +128,7 @@ bool MovoRobotInterface::sendTargetJointAngles_(const VectorFloat &jointAngles, 
 	if (jointAngles.size() != NUM_JOINTS)
 		ERROR("Vector of joint angles has wrong size. Should be " + std::to_string(NUM_JOINTS));
 
+	movoAPI_->EraseAllTrajectories();
 	VectorFloat currentJointAngles = getCurrentJointAngles();
 	VectorFloat jointVelocities = oppt::scaleVector(oppt::subtractVectors(jointAngles, currentJointAngles), 1000.0 / durationMS);
 	return applyJointVelocities(jointVelocities, durationMS);
@@ -137,7 +139,6 @@ bool MovoRobotInterface::applyJointVelocities(const VectorFloat &jointVelocities
 		ERROR("Vector of joint angles has wring size. Should be " + std::to_string(NUM_JOINTS));
 
 	movoAPI_->EraseAllTrajectories();
-
 	FloatType elapsedSinceStart = 0.0;
 	auto timeStart = std::chrono::system_clock::now();
 	while (true) {

@@ -12,7 +12,7 @@ public:
 
 	_NO_COPY_BUT_MOVE(HardwareStartup)
 
-	bool startupSequence();
+	bool startupSequence(const std::string &localIP);
 
 	std::unique_ptr<movo::MovoAPI> releaseMovoAPI();
 

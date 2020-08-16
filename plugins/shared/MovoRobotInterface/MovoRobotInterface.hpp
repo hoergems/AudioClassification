@@ -17,7 +17,7 @@ public:
 	/**
 	 * @brief Initializes the interface to the robot by performing a hardware startup
 	 */
-	void init();
+	void init(const std::string &localIP);
 
 	/**
 	 * @brief Get the current joint angles of the robot
@@ -46,8 +46,6 @@ public:
 
 private:
 	std::unique_ptr<movo::MovoAPI> movoAPI_ = nullptr;
-
-	bool gripperClosed_ = false;
 
 	const RobotEnvironment *robotEnvironment_ = nullptr;
 
