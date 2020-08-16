@@ -35,8 +35,7 @@ public :
 
     virtual ~AudioClassificationObservationPluginExecution() = default;
 
-    virtual bool load(RobotEnvironment* const robotEnvironment, const std::string& optionsFile) override {
-        robotEnvironment_ = robotEnvironment;
+    virtual bool load(const std::string& optionsFile) override {
         nodeHandle_ = std::make_unique<ros::NodeHandle>();
         serviceClient_ =
             std::make_unique<ros::ServiceClient>((*(nodeHandle_.get())).serviceClient<ObservationService::Observation>("Observations"));
@@ -199,8 +198,6 @@ public :
     }
 
 private:
-    const RobotEnvironment* robotEnvironment_;
-
     mutable std::uniform_real_distribution<FloatType> dist_;
 
     std::unique_ptr<ros::NodeHandle> nodeHandle_ = nullptr;

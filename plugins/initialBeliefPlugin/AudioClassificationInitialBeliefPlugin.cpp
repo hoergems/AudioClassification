@@ -31,9 +31,7 @@ public:
 
     virtual ~AudioClassificationInitialBeliefPlugin() = default;
 
-    virtual bool load(RobotEnvironment* const robotEnvironment,
-                      const std::string& optionsFile) override {
-        robotEnvironment_ = robotEnvironment;
+    virtual bool load(const std::string& optionsFile) override {
         parseOptions_<AudioClassificationInitialBeliefOptions>(optionsFile);
         initialStateVector_ = static_cast<const AudioClassificationInitialBeliefOptions *>(options_.get())->initialState;
 
@@ -108,16 +106,16 @@ public:
         unsigned int objectType = (*(objectPropertyDistribution_.get()))(*(randomEngine.get()));
         initialStateVector[10] = (FloatType)(objectType);
 
+        
+
         // Construct the initial state
         RobotStateSharedPtr initialState(new VectorState(initialStateVector));
-        initialState->setGazeboWorldState(initialWorldState);
+        initialState->setGazeboWorldState(initialWorldState);        
         initialState->setUserData(makeUserData_());
         return initialState;
     }
 
-private:
-    RobotEnvironment* robotEnvironment_ = nullptr;
-
+private:    
     VectorFloat initialStateVector_;
 
     // Pointer to the end effector link

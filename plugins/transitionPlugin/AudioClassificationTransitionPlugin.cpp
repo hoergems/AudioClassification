@@ -35,11 +35,10 @@ public :
 
     virtual ~AudioClassificationTransitionPlugin() = default;
 
-    virtual bool load(RobotEnvironment* const robotEnvironment, const std::string& optionsFile) override {
-        robotEnvironment_ = robotEnvironment;
+    virtual bool load(const std::string& optionsFile) override {        
         parseOptions_<AudioClassificationTransitionPluginOptions>(optionsFile);
         auto options = static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get());
-        auto actionSpace = robotEnvironment->getRobot()->getActionSpace();
+        auto actionSpace = robotEnvironment_->getRobot()->getActionSpace();
 
         // Setup a custom action discretizer.
         // This action discretizer will generate 8 actions. See AudioClassificationActionDiscretizer.hpp
@@ -154,15 +153,15 @@ public :
 
         // The next 3 dimensions of the next state vector describe the relative position of
         // the cup with respect to the end effector
-#ifdef GZ_GT_7
+    #ifdef GZ_GT_7
         nextStateVector.push_back(cupLink_->WorldPose().Pos().X() - endEffectorLink_->WorldPose().Pos().X());
         nextStateVector.push_back(cupLink_->WorldPose().Pos().Y() - endEffectorLink_->WorldPose().Pos().Y());
         nextStateVector.push_back(cupLink_->WorldPose().Pos().Z() - endEffectorLink_->WorldPose().Pos().Z());
-#else
+    #else
         nextStateVector.push_back(cupLink_->GetWorldPose().pos.x - endEffectorLink_->GetWorldPose().pos.x);
         nextStateVector.push_back(cupLink_->GetWorldPose().pos.y - endEffectorLink_->GetWorldPose().pos.y);
         nextStateVector.push_back(cupLink_->GetWorldPose().pos.z - endEffectorLink_->GetWorldPose().pos.z);
-#endif
+    #endif
 
         // Add the object property to the state vector (same as current state)
         nextStateVector.push_back(currentStateVector[10]);
@@ -179,13 +178,10 @@ public :
         auto userDataNew = makeUserDataGrasping();
         propagationResult->nextState->setUserData(userDataNew);
         propagationResult->collisionReport = static_cast<AudioClassificationUserData *>(propagationResult->nextState->getUserData().get())->collisionReport;
-
-
         return propagationResult;
     }
 
-private:
-    const RobotEnvironment* robotEnvironment_;
+private:  
 
     /** @brief A pointer to the end effector link */
     gazebo::physics::Link *endEffectorLink_ = nullptr;
@@ -205,7 +201,7 @@ private:
 
 private:
     void initializeMovoInterface_() {
-        movoRobotInterface_ = std::unique_ptr<MovoRobotInterface>(new MovoRobotInterface);
+        movoRobotInterface_ = std::unique_ptr<MovoRobotInterface>(new MovoRobotInterface(robotEnvironment_));
         movoRobotInterface_->init();
 
         // Move the arm to the initial joint angles
@@ -215,17 +211,18 @@ private:
         std::this_thread::sleep_for(std::chrono::seconds(1));        
         movoRobotInterface_->moveToInitialJointAngles(initialJointAngles);
 
-    }
+    }    
+
 
     RobotStateUserDataSharedPtr makeUserDataGrasping() const {
-
+        
         RobotStateUserDataSharedPtr userData(new AudioClassificationUserData());
         auto ud = static_cast<AudioClassificationUserData*>(userData.get());
 
         ud->collisionReport = robotEnvironment_->getRobot()->makeDiscreteCollisionReportDirty();
 
         return userData;
-    }
+    }    
 
     VectorFloat applyEndEffectorVelocity_(const VectorFloat &currentStateVector, const VectorFloat &endEffectorVelocity, int action = 0, bool secondMacro = false) const {
         auto tracIkSolver = static_cast<oppt::TracIKSolver *>(robotEnvironment_->getRobot()->getIKSolver());
@@ -505,11 +502,11 @@ private:
 
     GZPose LinkWorldPose(const gazebo::physics::Link* link) const {
         // Returns link world pose according to gazebo api enabled
-#ifdef GZ_GT_7
+    #ifdef GZ_GT_7
         return link->WorldPose();
-#else
+    #else
         return link->GetWorldPose();
-#endif
+    #endif
 
     }
 

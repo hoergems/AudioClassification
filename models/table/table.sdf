@@ -1,13 +1,12 @@
 <?xml version='1.0'?>
 <sdf version='1.6'>
   <model name="table">
-      <pose frame=''>0.77 0.32 0.365 0.0 0 0</pose>
       <static>1</static>
       <link name="table_link">
       <visual name="table_visual">
         <geometry>
-          <box>
-            <size>0.62 1.92 0.7</size>
+          <box>            
+            <size>0.62 1.92 0.735</size>
           </box>
         </geometry>
         <material>          
@@ -17,7 +16,7 @@
       <collision name="table_collision">
         <geometry>
           <box>
-            <size>0.62 1.92 0.7</size>
+            <size>0.62 1.92 0.735</size>
           </box>
         </geometry>               
       </collision>

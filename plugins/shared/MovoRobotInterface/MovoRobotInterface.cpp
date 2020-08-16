@@ -3,10 +3,17 @@
 #include "MovoRobotInterface.hpp"
 #include "HardwareStartup.hpp"
 #include "Utils.hpp"
+#include <oppt/robotEnvironment/include/RobotEnvironment.hpp>
 
 //using namespace std::chrono_literals;
 
 namespace oppt {
+MovoRobotInterface::MovoRobotInterface(const RobotEnvironment* robotEnvironment):
+	robotEnvironment_(robotEnvironment),
+	movoMotionPlanner_(new MovoMotionPlanner(robotEnvironment)) {
+
+}
+
 void MovoRobotInterface::init() {
 	HardwareStartup hardwareStartup;
 	if (hardwareStartup.startupSequence() == false)
@@ -15,21 +22,41 @@ void MovoRobotInterface::init() {
 }
 
 void MovoRobotInterface::moveToInitialJointAngles(const VectorFloat &initialJointAngles) {
-	VectorFloat currentJointAngles = getCurrentJointAngles();
-	VectorFloat jointPositionIncrement = oppt::scaleVector(oppt::subtractVectors(initialJointAngles, currentJointAngles), 0.2);
-
 	// First open the gripper
 	openGripper();
 
+	VectorFloat currentJointAngles = getCurrentJointAngles();
+	FloatType dist = math::euclideanDistance<FloatType>(currentJointAngles, initialJointAngles);
+	cout << "dist: " << dist << endl;
+	if (dist < 0.02) {
+		LOGGING("Arm is already at the initial configuration");		
+		return;
+	}
+
+	TrajectorySharedPtr trajectory = movoMotionPlanner_->solve(currentJointAngles, initialJointAngles, 100.0);	
+	if (!trajectory)
+		ERROR("Couldn't find a trajectory to the initial state. Move the arm manually towards the initial configuration and try again.");
+
 	VectorFloat targetJointAngles = currentJointAngles;
 	FloatType stepDuration = 2000.0;
-	for (size_t i = 0; i != 5; ++i) {
-		targetJointAngles = oppt::addVectors(targetJointAngles, jointPositionIncrement);
-		LOGGING("Sending target joint angles. Press enter to continue");
-		printVector(targetJointAngles, "targetJointAngles");		
-		getchar();		
+	LOGGING("EXECUTING TRAJECTORY. BE CAREFUL!!! Press Enter to continue");
+	getchar();
+	for (size_t i = 1; i != trajectory->stateTrajectory.size(); ++i) {
+		targetJointAngles = trajectory->stateTrajectory[i]->as<VectorState>()->asVector();
+		LOGGING("Sending target joint angles " +
+		        std::to_string(i) +
+		        "/" +
+		        std::to_string(trajectory->stateTrajectory.size() - 1));
+		printVector(targetJointAngles, "targetJointAngles");
 		sendTargetJointAngles_(targetJointAngles, stepDuration);
 	}
+
+	targetJointAngles = initialJointAngles;
+	sendTargetJointAngles_(targetJointAngles, stepDuration);
+
+	LOGGING("Done. Press enter to continue");
+	getchar();
+
 }
 
 void MovoRobotInterface::openGripper() {
@@ -52,6 +79,7 @@ void MovoRobotInterface::openGripper() {
 	while (moveRes != NO_ERROR_KINOVA) {
 		moveRes = movoAPI_->SendBasicTrajectory(trajectoryPoint);
 	}
+
 }
 
 void MovoRobotInterface::closeGripper() {
@@ -67,7 +95,7 @@ void MovoRobotInterface::closeGripper() {
 	trajectoryPoint.InitStruct();
 	trajectoryPoint.Position.HandMode = POSITION_MODE;
 	trajectoryPoint.Position.Type = ANGULAR_POSITION;
-	trajectoryPoint.Position.Actuators = currentPosition.Actuators;	
+	trajectoryPoint.Position.Actuators = currentPosition.Actuators;
 	trajectoryPoint.Position.Fingers.Finger1 = 9000.0;
 	trajectoryPoint.Position.Fingers.Finger2 = 9000.0;
 	trajectoryPoint.Position.Fingers.Finger3 = 9000.0;
@@ -76,6 +104,7 @@ void MovoRobotInterface::closeGripper() {
 	while (moveRes != NO_ERROR_KINOVA) {
 		moveRes = movoAPI_->SendBasicTrajectory(trajectoryPoint);
 	}
+
 }
 
 VectorFloat MovoRobotInterface::getCurrentJointAngles() const {
@@ -84,23 +113,23 @@ VectorFloat MovoRobotInterface::getCurrentJointAngles() const {
 	VectorFloat angles;
 	int res = 0;
 	while (true) {
-		res = movoAPI_->GetAngularPosition(positions);		
+		res = movoAPI_->GetAngularPosition(positions);
 		angles = toRadianPosition(toStandardVec(positions.Actuators));
 		// Check for errors
 		if (angles[0] != 0.0 && angles[3] != 0.0 && angles[4] != 0.0)
-			break;		
+			break;
 	}
 
 	return angles;
 }
 
-bool MovoRobotInterface::sendTargetJointAngles_(const VectorFloat &jointAngles,const FloatType &durationMS) {
+bool MovoRobotInterface::sendTargetJointAngles_(const VectorFloat &jointAngles, const FloatType &durationMS) {
 	if (jointAngles.size() != NUM_JOINTS)
 		ERROR("Vector of joint angles has wrong size. Should be " + std::to_string(NUM_JOINTS));
 
 	VectorFloat currentJointAngles = getCurrentJointAngles();
 	VectorFloat jointVelocities = oppt::scaleVector(oppt::subtractVectors(jointAngles, currentJointAngles), 1000.0 / durationMS);
-	return applyJointVelocities(jointVelocities, durationMS);	
+	return applyJointVelocities(jointVelocities, durationMS);
 }
 
 bool MovoRobotInterface::applyJointVelocities(const VectorFloat &jointVelocities, const FloatType &durationMS) const {
@@ -138,7 +167,7 @@ bool MovoRobotInterface::sendTargetJointVelocities_(const VectorFloat &jointVelo
 	trajectoryPoint.Position.Actuators.Actuator6 = angularVelocities[5];
 	trajectoryPoint.Position.Actuators.Actuator7 = angularVelocities[6];
 
-	int trajectoryRes = 0;	
+	int trajectoryRes = 0;
 	trajectoryRes = movoAPI_->SendBasicTrajectory(trajectoryPoint);
 	if (trajectoryRes != NO_ERROR_KINOVA)
 		ERROR("Failed to send velocity target");
@@ -146,4 +175,5 @@ bool MovoRobotInterface::sendTargetJointVelocities_(const VectorFloat &jointVelo
 	//movoAPI_->EraseAllTrajectories();
 	return true;
 }
+
 }

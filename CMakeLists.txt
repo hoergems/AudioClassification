@@ -31,7 +31,10 @@ if(DEFINED ENV{OPPT_SEARCH_PATH})
 else()
    message("-- OPPT_SEARCH_PATH not set. Searching in default locations")
    find_package(oppt REQUIRED)
+   message("${oppt_INCLUDE_DIRS}")
 endif()
+message("================================================")
+message("${oppt_LIBRARY_DIRS}")
 
 include(${CMAKE_CURRENT_LIST_DIR}/plugins/CMakeLists.txt)
 

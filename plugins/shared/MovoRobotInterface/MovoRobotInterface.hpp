@@ -2,11 +2,13 @@
 #define _MOVO_ROBOT_INTERFACE_HPP_
 #include <oppt/opptCore/core.hpp>
 #include "MovoAPI.hpp"
+#include "MotionPlanner.hpp"
+
 
 namespace oppt {
 class MovoRobotInterface {
 public:
-	MovoRobotInterface() = default;
+	MovoRobotInterface(const RobotEnvironment* robotEnvironment);
 
 	~MovoRobotInterface() = default;
 
@@ -46,6 +48,10 @@ private:
 	std::unique_ptr<movo::MovoAPI> movoAPI_ = nullptr;
 
 	bool gripperClosed_ = false;
+
+	const RobotEnvironment *robotEnvironment_ = nullptr;
+
+	std::unique_ptr<MovoMotionPlanner> movoMotionPlanner_ = nullptr;
 
 private:
 	bool sendTargetJointAngles_(const VectorFloat &jointAngles, const FloatType &duration);

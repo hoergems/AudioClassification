@@ -27,8 +27,7 @@ public :
 
     virtual ~AudioClassificationObservationPlugin() = default;
 
-    virtual bool load(RobotEnvironment* const robotEnvironment, const std::string& optionsFile) override {
-        robotEnvironment_ = robotEnvironment;        
+    virtual bool load(const std::string& optionsFile) override {
         return true;
     }
 
@@ -151,8 +150,6 @@ public :
     }   
 
 private:
-    const RobotEnvironment* robotEnvironment_;
-
     mutable std::uniform_real_distribution<FloatType> dist_;
 };
 

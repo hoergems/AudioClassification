@@ -29,8 +29,7 @@ public :
 
     virtual ~AudioClassificationTerminalPlugin() = default;
 
-    virtual bool load(RobotEnvironment* const robotEnvironment, const std::string& optionsFile) override {
-        robotEnvironment_ = robotEnvironment;
+    virtual bool load(const std::string& optionsFile) override {
         return true;
     }
 
@@ -43,7 +42,6 @@ public :
     }
 
     virtual bool isTerminal(const PropagationResultSharedPtr& propagationResult) override {
-
         auto userData = static_cast<AudioClassificationUserData*>(propagationResult->nextState->getUserData().get());
         if (userData->collisionReport->collides) {
 
@@ -53,10 +51,11 @@ public :
                 {
 
                     return true;
+
                 }
 
-            }
 
+            }
         }
 
         if (propagationResult->action) {
@@ -70,9 +69,6 @@ public :
 
         return false;
     }
-
-private:
-    const RobotEnvironment* robotEnvironment_;
 };
 
 OPPT_REGISTER_TERMINAL_PLUGIN(AudioClassificationTerminalPlugin)
