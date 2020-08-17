@@ -371,7 +371,9 @@ private:
             // }
             if (robotEnvironment_->isExecutionEnvironment())
             {
+                nodeHandle_.setParam("/AudoClassification_Record", true);
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
+                nodeHandle_.setParam("/AudoClassification_Record", false);
             }
             newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
 
@@ -394,31 +396,33 @@ private:
 
             if (robotEnvironment_->isExecutionEnvironment())
             {
-                cout<<"xyz coords before any action: "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
+                // cout<<"xyz coords before any action: "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
                 movoRobotInterface_->closeGripper();
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 VectorFloat endEffectorVelocity(6, 0.0);
                 endEffectorVelocity[2] = endEffectorMotionDistance_;
-                FloatType elapsedSinceStart = 0.0;
-                auto timeStart = std::chrono::system_clock::now();
-                jointAnglesBeforeLift = movoRobotInterface_->getCurrentJointAngles();
+                // FloatType elapsedSinceStart = 0.0;
+                // auto timeStart = std::chrono::system_clock::now();
+                // jointAnglesBeforeLift = movoRobotInterface_->getCurrentJointAngles();
+                nodeHandle_.setParam("/AudoClassification_Record", true);
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
-                jointAnglesAfterLift = movoRobotInterface_->getCurrentJointAngles();
-                auto distance = math::euclideanDistance<FloatType>(jointAnglesBeforeLift, jointAnglesAfterLift);
-                printVector(jointAnglesBeforeLift, "joint angles before lift");
-                printVector(jointAnglesAfterLift, "joint angles after lift");
-                cout<<"EUCLIDEAN DISTANCE BETWEEN JOINT ANGLES BEFORE AND AFTER LIFT : "<< distance << endl;
-                elapsedSinceStart = (FloatType)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timeStart).count());
-                cout << "time to execute lift action: " << elapsedSinceStart << endl;
-                cout<<"xyz coords after lifting : "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
+                // jointAnglesAfterLift = movoRobotInterface_->getCurrentJointAngles();
+                // auto distance = math::euclideanDistance<FloatType>(jointAnglesBeforeLift, jointAnglesAfterLift);
+                // printVector(jointAnglesBeforeLift, "joint angles before lift");
+                // printVector(jointAnglesAfterLift, "joint angles after lift");
+                // cout<<"EUCLIDEAN DISTANCE BETWEEN JOINT ANGLES BEFORE AND AFTER LIFT : "<< distance << endl;
+                // elapsedSinceStart = (FloatType)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timeStart).count());
+                // cout << "time to execute lift action: " << elapsedSinceStart << endl;
+                // cout<<"xyz coords after lifting : "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 endEffectorVelocity[2] = -(2*endEffectorMotionDistanceSecondMacroAction_);
-                elapsedSinceStart = 0.0;
-                timeStart = std::chrono::system_clock::now();
+                // elapsedSinceStart = 0.0;
+                // timeStart = std::chrono::system_clock::now();
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity, 0, true);
-                elapsedSinceStart = (FloatType)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timeStart).count());
-                cout << "time to execute downward action: " << elapsedSinceStart << endl;
-                cout<<"xyz coords after all actions : "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
+                nodeHandle_.setParam("/AudoClassification_Record", false);
+                // elapsedSinceStart = (FloatType)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timeStart).count());
+                // cout << "time to execute downward action: " << elapsedSinceStart << endl;
+                // cout<<"xyz coords after all actions : "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 movoRobotInterface_->openGripper();
                 std::this_thread::sleep_for(std::chrono::seconds(1));
