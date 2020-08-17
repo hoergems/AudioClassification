@@ -22,6 +22,7 @@
 #include "AudioClassificationTransitionPluginOptions.hpp"
 #include "AudioClassificationUserData.hpp"
 #include "MovoRobotInterface/MovoRobotInterface.hpp"
+#include <chrono>
 
 namespace oppt
 {
@@ -148,7 +149,7 @@ public :
         {
             // One of the end effector motion actions (X_PLUS, X_MINUS, Y_PLUS, Y_MINUS) is being executed
 
-            nextJointAngles = applyEndEffectorVelocity_(currentStateVector, endEffectorVelocity);
+            nextJointAngles = applyEndEffectorVelocity_(currentStateVector, endEffectorVelocity, actionBinNumber);
         }
 
         // The first 7 dimensions of the next state vector are the new joint angles
@@ -157,15 +158,15 @@ public :
 
         // The next 3 dimensions of the next state vector describe the relative position of
         // the cup with respect to the end effector
-#ifdef GZ_GT_7
+    #ifdef GZ_GT_7
         nextStateVector.push_back(cupLink_->WorldPose().Pos().X() - endEffectorLink_->WorldPose().Pos().X());
         nextStateVector.push_back(cupLink_->WorldPose().Pos().Y() - endEffectorLink_->WorldPose().Pos().Y());
         nextStateVector.push_back(cupLink_->WorldPose().Pos().Z() - endEffectorLink_->WorldPose().Pos().Z());
-#else
+    #else
         nextStateVector.push_back(cupLink_->GetWorldPose().pos.x - endEffectorLink_->GetWorldPose().pos.x);
         nextStateVector.push_back(cupLink_->GetWorldPose().pos.y - endEffectorLink_->GetWorldPose().pos.y);
         nextStateVector.push_back(cupLink_->GetWorldPose().pos.z - endEffectorLink_->GetWorldPose().pos.z);
-#endif
+    #endif
 
         // Add the object property to the state vector (same as current state)
         nextStateVector.push_back(currentStateVector[10]);
@@ -198,6 +199,7 @@ private:
      * This distance can be modified in the configuration file (via transitionPluginOptions.endEffectorMotionDistance)
      */
     FloatType endEffectorMotionDistance_ = 0.05;
+    FloatType endEffectorMotionDistanceSecondMacroAction_ = 0.06;
 
     /** @brief The interface to the physical robot */
     std::unique_ptr<MovoRobotInterface> movoRobotInterface_ = nullptr;
@@ -217,8 +219,12 @@ private:
         // Move the arm to the initial joint angles
         VectorFloat initialState = static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get())->initialState;
         VectorFloat initialJointAngles(initialState.begin(), initialState.begin() + 7);
+        movoRobotInterface_->openGripper();
+        std::this_thread::sleep_for(std::chrono::seconds(1));        
         movoRobotInterface_->moveToInitialJointAngles(initialJointAngles);
-    }
+    }    
+
+
 
     RobotStateUserDataSharedPtr makeUserDataGrasping() const {
 
@@ -230,7 +236,7 @@ private:
         return userData;
     }
 
-    VectorFloat applyEndEffectorVelocity_(const VectorFloat &currentStateVector, const VectorFloat &endEffectorVelocity) const {
+    VectorFloat applyEndEffectorVelocity_(const VectorFloat &currentStateVector, const VectorFloat &endEffectorVelocity, int action = 0, bool secondMacro = false) const {
         auto tracIkSolver = static_cast<oppt::TracIKSolver *>(robotEnvironment_->getRobot()->getIKSolver());
         VectorFloat currentJointAngles = getCurrentJointAngles_(currentStateVector);
 
@@ -239,7 +245,7 @@ private:
             tracIkSolver->jointVelocitiesFromTwist(currentJointAngles, endEffectorVelocity);
 
         // The next joint angles are then simply the current joint angles, plus the joint velocities
-        VectorFloat newJointAngles = applyJointVelocities_(currentJointAngles, jointVelocities);
+        VectorFloat newJointAngles = applyJointVelocities_(currentJointAngles, jointVelocities, secondMacro);
 
         // Update the Gazebo model with the next joint angles
         robotEnvironment_->getGazeboInterface()->setStateVector(newJointAngles);
@@ -255,7 +261,8 @@ private:
         // TODO: Make sure the cup remains in its current positions when the end effector
         // moves away from the cup
         FloatType l2norm = sqrt(std::inner_product(relativeCupPosition.begin(), relativeCupPosition.end(), relativeCupPosition.begin(), 0.0));
-        if (l2norm < 0.01) {
+        if ((l2norm < 0.01) && (action != 1)) 
+        {
             GZPose endEffectorPose = LinkWorldPose(endEffectorLink_);
 #ifdef GZ_GT_7
             geometric::Pose newCupPose(endEffectorPose.Pos().X(),
@@ -293,9 +300,14 @@ private:
     /**
      * @brief Apply a vector of joint velocities to the robot and return the resulting vector of joint angles
      */
-    VectorFloat applyJointVelocities_(const VectorFloat &currentJointAngles, const VectorFloat &jointVelocities) const {
+    VectorFloat applyJointVelocities_(const VectorFloat &currentJointAngles, const VectorFloat &jointVelocities, bool secondMacro = false) const {
         if (robotEnvironment_->isExecutionEnvironment()) {
             FloatType durationMS = 1000.0;
+            if (secondMacro)
+            {
+                cout<<"Message for second macro"<<endl;
+                durationMS = 500.0;
+            }
             movoRobotInterface_->applyJointVelocities(jointVelocities, durationMS);
             return movoRobotInterface_->getCurrentJointAngles();
         }
@@ -310,6 +322,9 @@ private:
                                     const geometric::Pose &currentEndEffectorPose,
                                     const int &macroAction) const {
         VectorFloat newJointAngles;
+        VectorFloat jointAnglesBeforeLift;
+        VectorFloat jointAnglesAfterLift;
+        FloatType timestart = oppt::clock_ms();
 
         if (macroAction == 1 or macroAction == 2) {
             // In case we execute the SLIDE or BANG macro action, we first have to move the
@@ -339,12 +354,27 @@ private:
 
             // Apply this velocity to the end effector. This will result in a new set of joint angles that correspong
             // to the resulting end effector pose (after pushing the object)
+            // if (robotEnvironment_->isExecutionEnvironment())
+            // {
+
+            //     cout<<"xyz coords before sliding action: "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;            
+            //     FloatType elapsedSinceStart = 0.0;
+            //     auto timeStart = std::chrono::system_clock::now();
+            //     newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
+            //     elapsedSinceStart = (FloatType)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timeStart).count());
+            //     cout << "time to execute sliding action: " << elapsedSinceStart<< endl;
+            //     cout<<"xyz coords after sliding action: "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
+            // }
+            // else
+            // {
+            //     newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
+            // }
             if (robotEnvironment_->isExecutionEnvironment())
             {
-
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
             }
             newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
+
             // We simply set the resulting world pose of the cup (after pushing it) to be equal to the resulting
             // end effector world pose
             geometric::Pose newCupWorldPoseAfterPushing(newEndEffectorWorldPoseAfterPushing.position.x(),
@@ -364,16 +394,35 @@ private:
 
             if (robotEnvironment_->isExecutionEnvironment())
             {
-
+                cout<<"xyz coords before any action: "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
                 movoRobotInterface_->closeGripper();
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 VectorFloat endEffectorVelocity(6, 0.0);
                 endEffectorVelocity[2] = endEffectorMotionDistance_;
+                FloatType elapsedSinceStart = 0.0;
+                auto timeStart = std::chrono::system_clock::now();
+                jointAnglesBeforeLift = movoRobotInterface_->getCurrentJointAngles();
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
-                endEffectorVelocity[2] = -(endEffectorMotionDistance_);
-                newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
+                jointAnglesAfterLift = movoRobotInterface_->getCurrentJointAngles();
+                auto distance = math::euclideanDistance<FloatType>(jointAnglesBeforeLift, jointAnglesAfterLift);
+                printVector(jointAnglesBeforeLift, "joint angles before lift");
+                printVector(jointAnglesAfterLift, "joint angles after lift");
+                cout<<"EUCLIDEAN DISTANCE BETWEEN JOINT ANGLES BEFORE AND AFTER LIFT : "<< distance << endl;
+                elapsedSinceStart = (FloatType)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timeStart).count());
+                cout << "time to execute lift action: " << elapsedSinceStart << endl;
+                cout<<"xyz coords after lifting : "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                endEffectorVelocity[2] = -(2*endEffectorMotionDistanceSecondMacroAction_);
+                elapsedSinceStart = 0.0;
+                timeStart = std::chrono::system_clock::now();
+                newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity, 0, true);
+                elapsedSinceStart = (FloatType)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timeStart).count());
+                cout << "time to execute downward action: " << elapsedSinceStart << endl;
+                cout<<"xyz coords after all actions : "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
                 movoRobotInterface_->openGripper();
                 std::this_thread::sleep_for(std::chrono::seconds(1));
+                
             }
 
         }
@@ -471,11 +520,11 @@ private:
 
     GZPose LinkWorldPose(const gazebo::physics::Link* link) const {
         // Returns link world pose according to gazebo api enabled
-#ifdef GZ_GT_7
+    #ifdef GZ_GT_7
         return link->WorldPose();
-#else
+    #else
         return link->GetWorldPose();
-#endif
+    #endif
 
     }
 

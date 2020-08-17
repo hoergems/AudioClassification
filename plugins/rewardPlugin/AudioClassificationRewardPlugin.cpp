@@ -64,12 +64,13 @@ public :
         }
         else // MOVEMENT ACTIONS
         {
-            return 0.0;
+            return -1.0;
         }
 
     }
 
-    virtual std::pair<double, double> getMinMaxReward() const override {
+    virtual std::pair<double, double> getMinMaxReward() const override 
+    {
         return std::make_pair(0.0,
                               0.0);
     }
