@@ -39,7 +39,7 @@ public :
     virtual bool load(const std::string& optionsFile) override {
         parseOptions_<AudioClassificationTransitionPluginOptions>(optionsFile);
         // nodeHandle_ = std::make_unique<ros::NodeHandle>();
-        record_signal = nodeHandle_.advertise<std_msgs::Bool>("chatter", 100);
+        
         auto options = static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get());
         auto actionSpace = robotEnvironment_->getRobot()->getActionSpace();
 
@@ -204,7 +204,7 @@ private:
 
     // std::unique_ptr<ros::NodeHandle> nodeHandle_ = nullptr;
     ros::NodeHandle nodeHandle_;
-    std::unique_ptr<ros::Publisher> record_signal = nullptr;
+    
 
 
 private:
@@ -341,12 +341,8 @@ private:
             // to the resulting end effector pose (after pushing the object)
             if (robotEnvironment_->isExecutionEnvironment())
             {
-                std_msgs::Bool msg;
-                msg.data = true;
-                record_signal.publish(msg);
+
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
-                msg.data = false;
-                record_signal.publish(msg)
             }
             newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
             // We simply set the resulting world pose of the cup (after pushing it) to be equal to the resulting
@@ -373,14 +369,9 @@ private:
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 VectorFloat endEffectorVelocity(6, 0.0);
                 endEffectorVelocity[2] = endEffectorMotionDistance_;
-                std_msgs::Bool msg;
-                msg.data = true;
-                record_signal.publish(msg);
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
                 endEffectorVelocity[2] = -(endEffectorMotionDistance_);
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
-                msg.data = false;
-                record_signal.publish(msg);
                 movoRobotInterface_->openGripper();
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
