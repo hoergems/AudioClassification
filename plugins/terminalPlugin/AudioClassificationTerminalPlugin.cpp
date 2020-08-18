@@ -22,6 +22,7 @@ namespace oppt
 class AudioClassificationTerminalPlugin: public TerminalPlugin
 {
 public :
+    
     AudioClassificationTerminalPlugin():
         TerminalPlugin() {
 

@@ -33,14 +33,17 @@ public :
     AudioClassificationTransitionPlugin():
         TransitionPlugin() {
 
+            // ros::NodeHandle nh("~");
+
     }
 
     virtual ~AudioClassificationTransitionPlugin() = default;
 
     virtual bool load(const std::string& optionsFile) override {
         parseOptions_<AudioClassificationTransitionPluginOptions>(optionsFile);
-        // nodeHandle_ = std::make_unique<ros::NodeHandle>();
-        
+        // nh = std::make_unique<ros::NodeHandle>();
+        // ros::NodeHandle nodeHandle_("my_namespace");
+
         auto options = static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get());
         auto actionSpace = robotEnvironment_->getRobot()->getActionSpace();
 
@@ -204,13 +207,16 @@ private:
     /** @brief The interface to the physical robot */
     std::unique_ptr<MovoRobotInterface> movoRobotInterface_ = nullptr;
 
-    // std::unique_ptr<ros::NodeHandle> nodeHandle_ = nullptr;
-    ros::NodeHandle nodeHandle_;
-    
+    // std::unique_ptr<ros::NodeHandle> nh = nullptr;
+    // ros::NodeHandle nh("my_namespace");
+    ros::NodeHandle nh;
 
+    
 
 private:
     void initializeMovoInterface_() {
+        nh.setParam("/AudioClassification_Stop", false);
+        nh.setParam("/AudioClassification_Record", false);
         std::string localIP =
             static_cast<const AudioClassificationTransitionPluginOptions *>(options_.get())->localIP;
         movoRobotInterface_ = std::unique_ptr<MovoRobotInterface>(new MovoRobotInterface(robotEnvironment_));
@@ -325,7 +331,7 @@ private:
         VectorFloat jointAnglesBeforeLift;
         VectorFloat jointAnglesAfterLift;
         FloatType timestart = oppt::clock_ms();
-
+        
         if (macroAction == 1 or macroAction == 2) {
             // In case we execute the SLIDE or BANG macro action, we first have to move the
             // end effector to the current cup position
@@ -371,11 +377,18 @@ private:
             // }
             if (robotEnvironment_->isExecutionEnvironment())
             {
-                nodeHandle_.setParam("/AudoClassification_Record", true);
+                nh.setParam("/AudioClassification_Record", true);
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                cout<<"====================>START SIGNAL SENT"<<endl;
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
-                nodeHandle_.setParam("/AudoClassification_Record", false);
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                nh.setParam("/AudioClassification_Record", false);
+                cout<<"====================>END SIGNAL SENT"<<endl;
             }
-            newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
+            else
+            {
+                newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
+            }    
 
             // We simply set the resulting world pose of the cup (after pushing it) to be equal to the resulting
             // end effector world pose
@@ -394,6 +407,7 @@ private:
             // to the ones we got after moving the end effector to the cup position.
             // So we actually don't have to do anything here
 
+
             if (robotEnvironment_->isExecutionEnvironment())
             {
                 // cout<<"xyz coords before any action: "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
@@ -404,7 +418,9 @@ private:
                 // FloatType elapsedSinceStart = 0.0;
                 // auto timeStart = std::chrono::system_clock::now();
                 // jointAnglesBeforeLift = movoRobotInterface_->getCurrentJointAngles();
-                nodeHandle_.setParam("/AudoClassification_Record", true);
+                nh.setParam("/AudioClassification_Record", true);
+                cout<<"====================>START SIGNAL SENT"<<endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
                 // jointAnglesAfterLift = movoRobotInterface_->getCurrentJointAngles();
                 // auto distance = math::euclideanDistance<FloatType>(jointAnglesBeforeLift, jointAnglesAfterLift);
@@ -419,7 +435,9 @@ private:
                 // elapsedSinceStart = 0.0;
                 // timeStart = std::chrono::system_clock::now();
                 newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity, 0, true);
-                nodeHandle_.setParam("/AudoClassification_Record", false);
+                cout<<"====================>END SIGNAL SENT"<<endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                nh.setParam("/AudioClassification_Record", false);
                 // elapsedSinceStart = (FloatType)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timeStart).count());
                 // cout << "time to execute downward action: " << elapsedSinceStart << endl;
                 // cout<<"xyz coords after all actions : "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
@@ -435,6 +453,10 @@ private:
             // For the Move to location A and Move to location B macro actions,
             // we can (for the moment) simply return the current joint angles,
             // because executing those actions will result in a terminal state
+            if (robotEnvironment_->isExecutionEnvironment())
+            {
+                nh.setParam("/AudioClassification_Stop", true);
+            }
             newJointAngles = VectorFloat(currentStateVector.begin(), currentStateVector.begin() + 7);
         }
 
