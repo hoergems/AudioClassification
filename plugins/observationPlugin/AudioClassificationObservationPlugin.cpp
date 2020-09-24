@@ -28,6 +28,7 @@ public :
     virtual ~AudioClassificationObservationPlugin() = default;
 
     virtual bool load(const std::string& optionsFile) override {
+        makeObservationDistribution();
         return true;
     }
 
@@ -45,51 +46,40 @@ public :
         {
             if (stateVec[stateVec.size() - 1] == 0) // PLASTIC CUP
             {
-                if (sample <= 0.1)
-                    observationVec[0] = 0;
-                else if (sample <= 0.2)
-                    observationVec[0] = 1;
-                else
-                    observationVec[0] = 2;
+                Vectordf obs = pringles_can_action1->sample(1);
+                observationVec[0] = obs(0,0);
+                // cout<<"Pringles can action 1 : "<<observationVec[0]<<endl;
             }
             else // COFFEE MUG
             {
-                if (sample <= 0.1)
-                    observationVec[0] = 0;
-                else if (sample <= 0.8)
-                    observationVec[0] = 1;
-                else
-                    observationVec[0] = 2;
+                Vectordf obs = coffee_mug_action1->sample(1);
+                observationVec[0] = obs(0,0);
+                // cout<<"Coffee mug action 1 : "<<observationVec[0]<<endl;
             }
+            
         }
         else if (binNumber == 5) //BANG
         {
             if (stateVec[stateVec.size() - 1] == 0) // PLASTIC CUP
             {
-                if (sample <= 0.1)
-                    observationVec[0] = 0;
-                else if (sample <= 0.8)
-                    observationVec[0] = 1;
-                else
-                    observationVec[0] = 2;
-
+                Vectordf obs = pringles_can_action2->sample(1);
+                observationVec[0] = obs(0,0);
+                // cout<<"Pringles can action 2 : "<<observationVec[0]<<endl;   
             }
             else //COFFEE MUG
             {
-                if (sample <= 0.7)
-                    observationVec[0] = 0;
-                else if (sample <= 0.9)
-                    observationVec[0] = 1;
-                else
-                    observationVec[0] = 2;
+                Vectordf obs = coffee_mug_action2->sample(1);
+                observationVec[0] = obs(0,0);
+                // cout<<"Coffee mug action 2 : "<<observationVec[0]<<endl;
             }
+
         }
         else
         {   
-            observationVec[0] = 3;
+            observationVec[0] = 0;
         }
 
-
+        
         observationResult->observation = ObservationSharedPtr(new VectorObservation(observationVec));
         return observationResult;
     }
@@ -100,57 +90,98 @@ public :
         unsigned int binNumber = action->as<DiscreteVectorAction>()->getBinNumber();
         VectorFloat stateVec = state->as<VectorState>()->asVector();
         VectorFloat observationVec = observation->as<VectorObservation>()->asVector();
+        FloatType pdf = 0.0;
         if (binNumber == 4) // SLIDE ACTION
         {
             if (stateVec[stateVec.size() - 1] == 0) //PLASTIC CUP
             {
-                if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.8;
-                else
-                    return 0.1;
+                pdf = pringles_can_action1->pdf(observationVec);
+                // cout<<"Pringles can action 1 PDF : "<<observationVec[0]<<" : "<<pdf<<endl;
             }
             else // COFFEE MUG
             {
-                if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.7;
-                else if (observationVec[observationVec.size() -1] == 0)
-                    return 0.1;
-                else
-                    return 0.2;
+                pdf = coffee_mug_action1->pdf(observationVec);
+                // cout<<"Coffee mug action 1 PDF : "<<observationVec[0]<<" : "<<pdf<<endl;
             }
-        } 
+        }
         else if (binNumber == 5) //BANG ACTION
         {
             if (stateVec[stateVec.size() - 1] == 0) //PLASTIC CUP
             {
-                if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.7;
-                else if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.1;
-                else
-                    return 0.2;
+                pdf = pringles_can_action2->pdf(observationVec);
+                // cout<<"Pringles can action 2 PDF : "<<observationVec[0]<<" : "<<pdf<<endl;
             }
             else //COFFEE MUG
             {
-                if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.7;
-                else if (observationVec[observationVec.size() -1] == 1)
-                    return 0.2;
-                else
-                    return 0.1;
-            }            
+                pdf = coffee_mug_action2->pdf(observationVec);
+                // cout<<"Coffee mug action 2 PDF : "<<observationVec[0]<<" : "<<pdf<<endl;
+                
+            }
         }
         else
         {
-            if (observationVec[observationVec.size() - 1] == 3)
+            if (observationVec[observationVec.size() - 1] == 0)
                 return 1.0;
             else
                 ERROR("IMPOSSIBLE");
         }
+
+        if (pdf < 1e-6) {
+            LOGGING("OBSERVATION PROB IS TOO SMALL");
+            return 0.0001;
+        }
+
+        
+        return pdf;
     }   
+
+    bool makeObservationDistribution() 
+    {
+        auto randomEngine = robotEnvironment_->getRobot()->getRandomEngine();
+
+        coffee_mug_action1 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+        coffee_mug_action2 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+        pringles_can_action1 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+        pringles_can_action2 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+
+        Matrixdf mean = Matrixdf::Zero(1, 1);
+        Matrixdf covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean(0,0) = 1287.0;
+        covarianceMatrix(0,0) = 295.0;
+        coffee_mug_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        coffee_mug_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+
+        mean = Matrixdf::Zero(1, 1);
+        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean(0,0) = 1254.0;
+        covarianceMatrix(0,0) = 98.0;
+        coffee_mug_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        coffee_mug_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+
+        mean = Matrixdf::Zero(1, 1);
+        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean(0,0) = 1424.0;
+        covarianceMatrix(0,0) = 174.0;
+        pringles_can_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        pringles_can_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+
+        mean = Matrixdf::Zero(1, 1);
+        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean(0,0) = 1993.0;
+        covarianceMatrix(0,0) = 159.0;
+        pringles_can_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        pringles_can_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+
+    }
 
 private:
     mutable std::uniform_real_distribution<FloatType> dist_;
+
+    std::unique_ptr<Distribution<FloatType>> coffee_mug_action1;
+    std::unique_ptr<Distribution<FloatType>> coffee_mug_action2;
+    std::unique_ptr<Distribution<FloatType>> pringles_can_action1;
+    std::unique_ptr<Distribution<FloatType>> pringles_can_action2;
+
 };
 
 OPPT_REGISTER_OBSERVATION_PLUGIN(AudioClassificationObservationPlugin)

@@ -417,7 +417,7 @@ private:
                 endEffectorVelocity[2] = endEffectorMotionDistance_;
                 // FloatType elapsedSinceStart = 0.0;
                 // auto timeStart = std::chrono::system_clock::now();
-                // jointAnglesBeforeLift = movoRobotInterface_->getCurrentJointAngles();
+                jointAnglesBeforeLift = movoRobotInterface_->getCurrentJointAngles();
                 nh.setParam("/AudioClassification_Record", true);
                 cout<<"====================>START SIGNAL SENT"<<endl;
                 std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -443,6 +443,8 @@ private:
                 // cout<<"xyz coords after all actions : "<<endEffectorLink_->GetWorldPose().pos.x<<" "<<endEffectorLink_->GetWorldPose().pos.y<<" "<<endEffectorLink_->GetWorldPose().pos.z<<endl;
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 movoRobotInterface_->openGripper();
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                movoRobotInterface_->sendTargetJointAngles_(jointAnglesBeforeLift, 1000.0);
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 
             }

@@ -22,6 +22,7 @@
 #include "ObservationRequest.h"
 #include "ObservationResponse.h"
 #include <oppt/plugin/Plugin.hpp>
+#include <chrono>
 #include "oppt/opptCore/Distribution.hpp"
 namespace oppt
 {
@@ -37,6 +38,7 @@ public :
 
     virtual bool load(const std::string& optionsFile) override {
         nodeHandle_ = std::make_unique<ros::NodeHandle>();
+        makeObservationDistribution();
         serviceClient_ =
             std::make_unique<ros::ServiceClient>((*(nodeHandle_.get())).serviceClient<ObservationService::Observation>("Observations"));
         return true;
@@ -55,8 +57,10 @@ public :
         unsigned int binNumber = Action->as<DiscreteVectorAction>()->getBinNumber();
         VectorFloat stateVec = observationRequest->currentState->as<VectorState>()->asVector();
         FloatType sample = dist_(*(robotEnvironment_->getRobot()->getRandomEngine().get()));
-
-        int response = 3;
+        // std::this_thread::sleep_for(std::chrono::seconds(2));
+        cout<<"Press enter to get observation : "<<endl;
+        getchar();
+        int response = 0;
         if (binNumber == 4) //SLIDE
         {
             if (stateVec[stateVec.size() - 1] == 0) // PLASTIC CUP
@@ -148,44 +152,28 @@ public :
         unsigned int binNumber = action->as<DiscreteVectorAction>()->getBinNumber();
         VectorFloat stateVec = state->as<VectorState>()->asVector();
         VectorFloat observationVec = observation->as<VectorObservation>()->asVector();
+        FloatType pdf = 0.0;
         if (binNumber == 4) // SLIDE ACTION
         {
             if (stateVec[stateVec.size() - 1] == 0) //PLASTIC CUP
             {
-                if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.8;
-                else
-                    return 0.1;
+                pdf = pringles_can_action1->pdf(observationVec);
             }
             else // COFFEE MUG
             {
-                if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.7;
-                else if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.1;
-                else
-                    return 0.2;
+                pdf = coffee_mug_action1->pdf(observationVec);
             }
         }
         else if (binNumber == 5) //BANG ACTION
         {
             if (stateVec[stateVec.size() - 1] == 0) //PLASTIC CUP
             {
-                if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.7;
-                else if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.1;
-                else
-                    return 0.2;
+                pdf = pringles_can_action2->pdf(observationVec);
             }
             else //COFFEE MUG
             {
-                if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.7;
-                else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.2;
-                else
-                    return 0.1;
+                pdf = coffee_mug_action2->pdf(observationVec);
+                
             }
         }
         else
@@ -195,6 +183,54 @@ public :
             else
                 ERROR("IMPOSSIBLE");
         }
+
+        if (pdf < 1e-6) {
+            LOGGING("OBSERVATION PROB IS TOO SMALL");
+            return 0.0001;
+        }
+
+
+        return pdf;
+
+    }
+
+    bool makeObservationDistribution() {
+        auto randomEngine = robotEnvironment_->getRobot()->getRandomEngine();
+
+
+        coffee_mug_action1 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+        coffee_mug_action2 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+        pringles_can_action1 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+        pringles_can_action2 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+
+        Matrixdf mean = Matrixdf::Zero(1, 1);
+        Matrixdf covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean(0,0) = 1287.0;
+        covarianceMatrix(0,0) = 295.0;
+        coffee_mug_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        coffee_mug_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+
+        mean = Matrixdf::Zero(1, 1);
+        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean(0,0) = 1254.0;
+        covarianceMatrix(0,0) = 98.0;
+        coffee_mug_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        coffee_mug_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+
+        mean = Matrixdf::Zero(1, 1);
+        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean(0,0) = 1424.0;
+        covarianceMatrix(0,0) = 174.0;
+        pringles_can_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        pringles_can_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+
+        mean = Matrixdf::Zero(1, 1);
+        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean(0,0) = 1993.0;
+        covarianceMatrix(0,0) = 159.0;
+        pringles_can_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        pringles_can_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+
     }
 
 private:
@@ -203,6 +239,11 @@ private:
     std::unique_ptr<ros::NodeHandle> nodeHandle_ = nullptr;
 
     std::unique_ptr<ros::ServiceClient> serviceClient_ = nullptr;
+
+    std::unique_ptr<Distribution<FloatType>> coffee_mug_action1;
+    std::unique_ptr<Distribution<FloatType>> coffee_mug_action2;
+    std::unique_ptr<Distribution<FloatType>> pringles_can_action1;
+    std::unique_ptr<Distribution<FloatType>> pringles_can_action2;
 };
 
 OPPT_REGISTER_OBSERVATION_PLUGIN(AudioClassificationObservationPluginExecution)

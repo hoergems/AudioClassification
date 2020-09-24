@@ -87,7 +87,7 @@ class Recorder:
                 stream.stop_stream()
                 stream.close()
                 # p.terminate()
-                filename = self.WAVE_OUTPUT_FILENAME + str(self.counter) + ".wav"
+                filename = self.WAVE_OUTPUT_FILENAME + "0.wav"
                 self.counter = self.counter + 1
                 print(filename)
                 wf = wave.open(filename, 'wb')

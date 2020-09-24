@@ -44,6 +44,7 @@ public:
 	 */
 	bool applyJointVelocities(const VectorFloat &jointVelocities, const FloatType &durationMS) const;
 
+	bool sendTargetJointAngles_(const VectorFloat &jointAngles, const FloatType &duration);
 private:
 	std::unique_ptr<movo::MovoAPI> movoAPI_ = nullptr;
 
@@ -52,7 +53,6 @@ private:
 	std::unique_ptr<MovoMotionPlanner> movoMotionPlanner_ = nullptr;
 
 private:
-	bool sendTargetJointAngles_(const VectorFloat &jointAngles, const FloatType &duration);
 
 	bool sendTargetJointVelocities_(const VectorFloat &jointVelocities) const;
 

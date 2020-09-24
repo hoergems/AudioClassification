@@ -208,8 +208,8 @@ class ObservationServer:
 	def get_Centroid(self, file):
 	    y, sr = librosa.load(file)
 
-	    y = self.TrimSignal(y)
-	    y = np.asfortranarray(y)
+	    # y = self.TrimSignal(y)
+	    # y = np.asfortranarray(y)
 
 	    centroid = self.spectral_centroid(y, sr)
 
@@ -220,22 +220,26 @@ class ObservationServer:
 	def callback(self, req):
 		state = req.state
 		action = req.action
-		observation =None
-		# plastic cup slide 
-		if (state == 0) and (action == 0):
-			observation = self.plastic_cup_slide[np.random.randint(len(self.plastic_cup_slide))]
-		# plastic cup bang
-		elif (state == 0) and (action == 1):
-			observation = self.plastic_cup_bang[np.random.randint(len(self.plastic_cup_bang))]
-		# coffee mug slide
-		elif (state == 1) and (action == 0):
-			observation = self.coffee_mug_slide[np.random.randint(len(self.coffee_mug_slide))]
-		# coffee mug bang
-		elif (state == 1) and (action == 1):
-			observation = self.coffee_mug_bang[np.random.randint(len(self.coffee_mug_bang))]
-		else:
-			print("Incorrect combination of state and action values")
-			sys.exit()
+		observation = None
+		# # plastic cup slide 
+		# if (state == 0) and (action == 0):
+		# 	observation = self.plastic_cup_slide[np.random.randint(len(self.plastic_cup_slide))]
+		# # plastic cup bang
+		# elif (state == 0) and (action == 1):
+		# 	observation = self.plastic_cup_bang[np.random.randint(len(self.plastic_cup_bang))]
+		# # coffee mug slide
+		# elif (state == 1) and (action == 0):
+		# 	observation = self.coffee_mug_slide[np.random.randint(len(self.coffee_mug_slide))]
+		# # coffee mug bang
+		# elif (state == 1) and (action == 1):
+		# 	observation = self.coffee_mug_bang[np.random.randint(len(self.coffee_mug_bang))]
+		# else:
+		# 	print("Incorrect combination of state and action values")
+		# 	sys.exit()
+		observation = self.get_Centroid('/home/jihirshu/robot_recording_0.wav')
+		observation =  int(observation)
+
+
 		print(observation, state, action, self.i)
 		self.i=self.i+1
 		return observation
