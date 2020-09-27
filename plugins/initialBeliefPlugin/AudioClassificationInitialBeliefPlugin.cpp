@@ -102,9 +102,12 @@ public:
         GazeboWorldStatePtr initialWorldState = robotEnvironment_->getGazeboInterface()->getInitialWorldState();
 
         // Sample the object property (object type)
-        auto randomEngine = robotEnvironment_->getRobot()->getRandomEngine();
-        unsigned int objectType = (*(objectPropertyDistribution_.get()))(*(randomEngine.get()));
-        initialStateVector[10] = (FloatType)(objectType);
+        if (!robotEnvironment_->isExecutionEnvironment())
+        {
+            auto randomEngine = robotEnvironment_->getRobot()->getRandomEngine();
+            unsigned int objectType = (*(objectPropertyDistribution_.get()))(*(randomEngine.get()));
+            initialStateVector[10] = (FloatType)(objectType);
+        }
 
         
 

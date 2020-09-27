@@ -36,7 +36,7 @@ public :
         auto Action = propagationResult->action;
         unsigned int binNumber = Action->as<DiscreteVectorAction>()->getBinNumber();
 
-        if ((binNumber == 5) || (binNumber == 4)) // SLIDE OR BANG ACTION
+        if ((binNumber == 4) || (binNumber == 5)) // SLIDE OR BANG ACTION
         {
             return -1.0;
         }

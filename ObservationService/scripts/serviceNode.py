@@ -208,19 +208,26 @@ class ObservationServer:
 	def get_Centroid(self, file):
 	    y, sr = librosa.load(file)
 
-	    # y = self.TrimSignal(y)
-	    # y = np.asfortranarray(y)
+	    y = self.TrimSignal(y)
+	    y = np.asfortranarray(y)
 
 	    centroid = self.spectral_centroid(y, sr)
 
 	    return centroid
 
-		
+	def get_rms(self, file):
+		y, sr = librosa.load(file)
+		y = self.TrimSignal(y)
+	 	y = np.asfortranarray(y)
+		rms = np.mean(librosa.feature.rms(y))
+
+		return rms
 
 	def callback(self, req):
 		state = req.state
 		action = req.action
-		observation = None
+		centroid = None
+		rms = None
 		# # plastic cup slide 
 		# if (state == 0) and (action == 0):
 		# 	observation = self.plastic_cup_slide[np.random.randint(len(self.plastic_cup_slide))]
@@ -236,13 +243,14 @@ class ObservationServer:
 		# else:
 		# 	print("Incorrect combination of state and action values")
 		# 	sys.exit()
-		observation = self.get_Centroid('/home/jihirshu/robot_recording_0.wav')
-		observation =  int(observation)
+		centroid = self.get_Centroid('/home/jihirshu/robot_recording_0.wav')
+		centroid =  float(centroid)
+		rms = self.get_rms('/home/jihirshu/robot_recording_0.wav')
+		rms = float(rms)
 
-
-		print(observation, state, action, self.i)
+		print(centroid, rms, state, action, self.i)
 		self.i=self.i+1
-		return observation
+		return centroid, rms
 
 
 def main():

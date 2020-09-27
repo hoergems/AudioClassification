@@ -50,7 +50,7 @@ public :
 
 
         ObservationResultSharedPtr observationResult(new ObservationResult);
-        VectorFloat observationVec({0.0});
+        VectorFloat observationVec({0.0, 0.0});
         observationResult->state = observationRequest->currentState.get();
         observationResult->action = observationRequest->action;
         auto Action = observationRequest->action;
@@ -60,7 +60,8 @@ public :
         // std::this_thread::sleep_for(std::chrono::seconds(2));
         cout<<"Press enter to get observation : "<<endl;
         getchar();
-        int response = 0;
+        FloatType centroid = 0.0;
+        FloatType rms = 0.0;
         if (binNumber == 4) //SLIDE
         {
             if (stateVec[stateVec.size() - 1] == 0) // PLASTIC CUP
@@ -70,8 +71,8 @@ public :
                 srv.request.action = atoll("0");                
                 if ((*(serviceClient_.get())).call(srv))
                 {
-                    response = (int)srv.response.observation;
-
+                    centroid = (FloatType)srv.response.centroid;
+                    rms = (FloatType)srv.response.rms;
                 }
 
                 // if (sample <= 0.1)
@@ -88,8 +89,8 @@ public :
                 srv.request.action = atoll("0");
                 if ((*(serviceClient_.get())).call(srv))
                 {
-                    response = (int)srv.response.observation;
-
+                    centroid = (FloatType)srv.response.centroid;
+                    rms = (FloatType)srv.response.rms;
                 }
 
                 // if (sample <= 0.1)
@@ -109,8 +110,8 @@ public :
                 srv.request.action = atoll("1");
                 if ((*(serviceClient_.get())).call(srv))
                 {
-                    response = (int)srv.response.observation;
-
+                    centroid = (FloatType)srv.response.centroid;
+                    rms = (FloatType)srv.response.rms;
                 }
 
                 // if (sample <= 0.1)
@@ -128,8 +129,8 @@ public :
                 srv.request.action = atoll("1");
                 if ((*(serviceClient_.get())).call(srv))
                 {
-                    response = (int)srv.response.observation;
-
+                    centroid = (FloatType)srv.response.centroid;
+                    rms = (FloatType)srv.response.rms;
                 }
 
                 // if (sample <= 0.7)
@@ -140,8 +141,9 @@ public :
                 //     observationVec[0] = 2;
             }
         }
-        observationVec[0] = response;
-
+        observationVec[0] = centroid;
+        observationVec[1] = rms;
+        cout<<"Observation received" << observationVec[0] << "  "<<observationVec[1]<<endl;
         observationResult->observation = ObservationSharedPtr(new VectorObservation(observationVec));
         return observationResult;
     }
@@ -178,17 +180,15 @@ public :
         }
         else
         {
-            if (observationVec[observationVec.size() - 1] == 3)
+            if (observationVec[observationVec.size() - 1] == 0.0 && observationVec[observationVec.size() - 2] == 0.0)
                 return 1.0;
             else
+                cout<<observationVec[0]<<"  "<<observationVec[1]<<endl;
                 ERROR("IMPOSSIBLE");
         }
 
-        if (pdf < 1e-6) {
-            LOGGING("OBSERVATION PROB IS TOO SMALL");
-            return 0.0001;
-        }
-
+        // cout<<binNumber<<"  "<< stateVec[stateVec.size() - 1]<<"  "<< pdf << endl;
+        // cout<<observationVec[0]<<"   "<<observationVec[1]<<endl;
 
         return pdf;
 
@@ -203,34 +203,41 @@ public :
         pringles_can_action1 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
         pringles_can_action2 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
 
-        Matrixdf mean = Matrixdf::Zero(1, 1);
-        Matrixdf covarianceMatrix = Matrixdf::Identity(1, 1);
-        mean(0,0) = 1287.0;
-        covarianceMatrix(0,0) = 295.0;
+        Matrixdf mean = Matrixdf::Zero(2, 1);
+        Matrixdf covarianceMatrix = Matrixdf::Identity(2, 2);
+        mean(0,0) = 1387.0;
+        mean(1,0) = 0.0155;
+        covarianceMatrix(0,0) = 295.0*295.0;
+        covarianceMatrix(1,1) = 1.0965e-6;
         coffee_mug_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         coffee_mug_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
 
-        mean = Matrixdf::Zero(1, 1);
-        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean = Matrixdf::Zero(2, 1);
+        covarianceMatrix = Matrixdf::Identity(2, 2);
         mean(0,0) = 1254.0;
-        covarianceMatrix(0,0) = 98.0;
+        mean(1,0) = 0.01963;
+        covarianceMatrix(0,0) = 98.0*98.0;
+        covarianceMatrix(1,1) = 1.4e-6;
         coffee_mug_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         coffee_mug_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
 
-        mean = Matrixdf::Zero(1, 1);
-        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean = Matrixdf::Zero(2, 1);
+        covarianceMatrix = Matrixdf::Identity(2, 2);
         mean(0,0) = 1424.0;
-        covarianceMatrix(0,0) = 174.0;
+        mean(1,0) = 0.01452;
+        covarianceMatrix(0,0) = 174.0*174.0;
+        covarianceMatrix(1,1) = 4.26e-6;
         pringles_can_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         pringles_can_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
 
-        mean = Matrixdf::Zero(1, 1);
-        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean = Matrixdf::Zero(2, 1);
+        covarianceMatrix = Matrixdf::Identity(2, 2);
         mean(0,0) = 1993.0;
-        covarianceMatrix(0,0) = 159.0;
+        mean(1,0) = 0.01597;
+        covarianceMatrix(0,0) = 159.0*159.0;
+        covarianceMatrix(1,1) = 4.53e-6;
         pringles_can_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         pringles_can_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
-
     }
 
 private:

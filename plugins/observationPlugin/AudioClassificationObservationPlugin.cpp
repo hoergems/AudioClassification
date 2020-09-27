@@ -34,7 +34,7 @@ public :
 
     virtual ObservationResultSharedPtr getObservation(const ObservationRequest* observationRequest) const override {
         ObservationResultSharedPtr observationResult(new ObservationResult);
-        VectorFloat observationVec({0.0});
+        VectorFloat observationVec({0.0, 0.0});
         observationResult->state = observationRequest->currentState.get();
         observationResult->action = observationRequest->action;
         auto Action = observationRequest->action;
@@ -48,13 +48,15 @@ public :
             {
                 Vectordf obs = pringles_can_action1->sample(1);
                 observationVec[0] = obs(0,0);
-                // cout<<"Pringles can action 1 : "<<observationVec[0]<<endl;
+                observationVec[1] = obs(1,0);
+                // cout<<"Pringles can action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
             else // COFFEE MUG
             {
                 Vectordf obs = coffee_mug_action1->sample(1);
                 observationVec[0] = obs(0,0);
-                // cout<<"Coffee mug action 1 : "<<observationVec[0]<<endl;
+                observationVec[1] = obs(1,0);
+                // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
             
         }
@@ -64,19 +66,22 @@ public :
             {
                 Vectordf obs = pringles_can_action2->sample(1);
                 observationVec[0] = obs(0,0);
-                // cout<<"Pringles can action 2 : "<<observationVec[0]<<endl;   
+                observationVec[1] = obs(1,0);
+                // cout<<"Pringles can action 2 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;   
             }
             else //COFFEE MUG
             {
                 Vectordf obs = coffee_mug_action2->sample(1);
                 observationVec[0] = obs(0,0);
-                // cout<<"Coffee mug action 2 : "<<observationVec[0]<<endl;
+                observationVec[1] = obs(1,0);
+                // cout<<"Coffee mug action 2 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
 
         }
         else
         {   
-            observationVec[0] = 0;
+            observationVec[0] = 0.0;
+            observationVec[1] = 0.0;
         }
 
         
@@ -120,16 +125,15 @@ public :
         }
         else
         {
-            if (observationVec[observationVec.size() - 1] == 0)
+            if (observationVec[observationVec.size() - 1] == 0.0 && observationVec[observationVec.size() - 2] == 0.0)
                 return 1.0;
             else
+                cout<<observationVec[0]<<"  "<<observationVec[1]<<endl;
                 ERROR("IMPOSSIBLE");
         }
 
-        if (pdf < 1e-6) {
-            LOGGING("OBSERVATION PROB IS TOO SMALL");
-            return 0.0001;
-        }
+        // cout<<binNumber<<"  "<< stateVec[stateVec.size() - 1]<<"  "<< pdf << endl;
+        // cout<<observationVec[0]<<"   "<<observationVec[1]<<endl;        
 
         
         return pdf;
@@ -144,31 +148,39 @@ public :
         pringles_can_action1 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
         pringles_can_action2 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
 
-        Matrixdf mean = Matrixdf::Zero(1, 1);
-        Matrixdf covarianceMatrix = Matrixdf::Identity(1, 1);
-        mean(0,0) = 1287.0;
-        covarianceMatrix(0,0) = 295.0;
+        Matrixdf mean = Matrixdf::Zero(2, 1);
+        Matrixdf covarianceMatrix = Matrixdf::Identity(2, 2);
+        mean(0,0) = 1387.0;
+        mean(1,0) = 0.0155;
+        covarianceMatrix(0,0) = 295.0*295.0;
+        covarianceMatrix(1,1) = 1.0965e-6;
         coffee_mug_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         coffee_mug_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
 
-        mean = Matrixdf::Zero(1, 1);
-        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean = Matrixdf::Zero(2, 1);
+        covarianceMatrix = Matrixdf::Identity(2, 2);
         mean(0,0) = 1254.0;
-        covarianceMatrix(0,0) = 98.0;
+        mean(1,0) = 0.01963;
+        covarianceMatrix(0,0) = 98.0*98.0;
+        covarianceMatrix(1,1) = 1.4e-6;
         coffee_mug_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         coffee_mug_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
 
-        mean = Matrixdf::Zero(1, 1);
-        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean = Matrixdf::Zero(2, 1);
+        covarianceMatrix = Matrixdf::Identity(2, 2);
         mean(0,0) = 1424.0;
-        covarianceMatrix(0,0) = 174.0;
+        mean(1,0) = 0.01452;
+        covarianceMatrix(0,0) = 174.0*174.0;
+        covarianceMatrix(1,1) = 4.26e-6;
         pringles_can_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         pringles_can_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
 
-        mean = Matrixdf::Zero(1, 1);
-        covarianceMatrix = Matrixdf::Identity(1, 1);
+        mean = Matrixdf::Zero(2, 1);
+        covarianceMatrix = Matrixdf::Identity(2, 2);
         mean(0,0) = 1993.0;
-        covarianceMatrix(0,0) = 159.0;
+        mean(1,0) = 0.01597;
+        covarianceMatrix(0,0) = 159.0*159.0;
+        covarianceMatrix(1,1) = 4.53e-6;
         pringles_can_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         pringles_can_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
 
