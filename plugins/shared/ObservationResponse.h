@@ -24,22 +24,17 @@ struct ObservationResponse_
   typedef ObservationResponse_<ContainerAllocator> Type;
 
   ObservationResponse_()
-    : centroid(0.0)
-    , rms(0.0)  {
+    : observation(0)  {
     }
   ObservationResponse_(const ContainerAllocator& _alloc)
-    : centroid(0.0)
-    , rms(0.0)  {
+    : observation(0)  {
   (void)_alloc;
     }
 
 
 
-   typedef double _centroid_type;
-  _centroid_type centroid;
-
-   typedef double _rms_type;
-  _rms_type rms;
+   typedef int64_t _observation_type;
+  _observation_type observation;
 
 
 
@@ -70,8 +65,7 @@ return s;
 template<typename ContainerAllocator1, typename ContainerAllocator2>
 bool operator==(const ::ObservationService::ObservationResponse_<ContainerAllocator1> & lhs, const ::ObservationService::ObservationResponse_<ContainerAllocator2> & rhs)
 {
-  return lhs.centroid == rhs.centroid &&
-    lhs.rms == rhs.rms;
+  return lhs.observation == rhs.observation;
 }
 
 template<typename ContainerAllocator1, typename ContainerAllocator2>
@@ -128,12 +122,12 @@ struct MD5Sum< ::ObservationService::ObservationResponse_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "2c482b3318ee938958236df814de1721";
+    return "b1cd82a8c939565f6765e4d3a2dfd02f";
   }
 
   static const char* value(const ::ObservationService::ObservationResponse_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x2c482b3318ee9389ULL;
-  static const uint64_t static_value2 = 0x58236df814de1721ULL;
+  static const uint64_t static_value1 = 0xb1cd82a8c939565fULL;
+  static const uint64_t static_value2 = 0x6765e4d3a2dfd02fULL;
 };
 
 template<class ContainerAllocator>
@@ -152,8 +146,8 @@ struct Definition< ::ObservationService::ObservationResponse_<ContainerAllocator
 {
   static const char* value()
   {
-    return "float64 centroid\n"
-"float64 rms\n"
+    return "int64 observation\n"
+"\n"
 ;
   }
 
@@ -172,8 +166,7 @@ namespace serialization
   {
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
-      stream.next(m.centroid);
-      stream.next(m.rms);
+      stream.next(m.observation);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER
@@ -192,10 +185,8 @@ struct Printer< ::ObservationService::ObservationResponse_<ContainerAllocator> >
 {
   template<typename Stream> static void stream(Stream& s, const std::string& indent, const ::ObservationService::ObservationResponse_<ContainerAllocator>& v)
   {
-    s << indent << "centroid: ";
-    Printer<double>::stream(s, indent + "  ", v.centroid);
-    s << indent << "rms: ";
-    Printer<double>::stream(s, indent + "  ", v.rms);
+    s << indent << "observation: ";
+    Printer<int64_t>::stream(s, indent + "  ", v.observation);
   }
 };
 

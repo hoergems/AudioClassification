@@ -8,8 +8,6 @@
 #include <ros/service_traits.h>
 
 
-// #include <ObservationService/ObservationRequest.h>
-// #include <ObservationService/ObservationResponse.h>
 #include "/home/jihirshu/workspaces/ObjectDetection_ws/devel/include/ObservationService/ObservationRequest.h"
 #include "/home/jihirshu/workspaces/ObjectDetection_ws/devel/include/ObservationService/ObservationResponse.h"
 
@@ -41,7 +39,7 @@ template<>
 struct MD5Sum< ::ObservationService::Observation > {
   static const char* value()
   {
-    return "2d315063e1794cf8a7a1cf5f8622ce80";
+    return "27afc928d81a66a9d1064a580ce4b6b8";
   }
 
   static const char* value(const ::ObservationService::Observation&) { return value(); }

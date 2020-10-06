@@ -23,7 +23,11 @@ from subprocess import call
 import rospy
 import pyaudio
 import wave
-
+import soundfile as sf
+from python_speech_features import delta
+from python_speech_features import logfbank
+from python_speech_features import mfcc
+import scipy.io.wavfile as wav
 
 class ObservationServer:
 
@@ -38,6 +42,19 @@ class ObservationServer:
 		self.plastic_cup_bang = []
 		self.plastic_cup_slide = []
 		self.i=0
+		self.average_coffee_mug_action1 = np.load("average_coffee_mug_action1.npy")
+		self.average_coffee_mug_action2 = np.load("average_coffee_mug_action2.npy")
+		self.average_plastic_cup_action1 = np.load("average_plastic_cup_action1.npy")
+		self.average_plastic_cup_action2 = np.load("average_plastic_cup_action2.npy")
+		self.average_paper_base_action1 = np.load("average_paper_base_action1.npy")
+		self.average_paper_base_action2 = np.load("average_paper_base_action2.npy")
+		self.average_pringles_action1 = np.load("average_pringles_action1.npy")
+		self.average_pringles_action2 = np.load("average_pringles_action2.npy")
+		self.action1 = [self.average_pringles_action1, self.average_coffee_mug_action1, 
+						self.average_plastic_cup_action1, self.average_paper_base_action1]
+		self.action2 = [self.average_pringles_action2, self.average_coffee_mug_action2, 
+						self.average_plastic_cup_action2, self.average_paper_base_action2]
+
 		print("Please Wait while service is set up")
 
 		for file in coffee_mug_bang:
@@ -232,6 +249,33 @@ class ObservationServer:
 		rms = np.mean(librosa.feature.rms(y))
 		return rms
 
+	def classify(self, action):
+		rate=None
+		sig = None
+		fbank_feat = None
+		averages = None
+		if (action == 0):   #action 1
+			print("action 1")
+			(rate, sig) = wav.read('/home/jihirshu/filtered_robot_recording_0.wav')
+			fbank_feat = logfbank(sig, rate)
+			fbank_feat = fbank_feat[-140:, :]
+			averages = self.action1
+		else: 			    #action 2
+			print("action2")
+			(rate, sig) = wav.read('/home/jihirshu/robot_recording_0.wav')
+			sig = sig[2000:]
+			fbank_feat = logfbank(sig, rate)
+			fbank_feat = fbank_feat[-300:-150, :]
+			averages = self.action2
+
+		distances = []
+		for x in averages:
+			diff = np.absolute(fbank_feat - x)
+			distances.append(np.mean(diff, axis=(0, 1)))
+
+		return np.argmin(distances)
+
+
 	def callback(self, req):
 		state = req.state
 		action = req.action
@@ -252,15 +296,17 @@ class ObservationServer:
 		# else:
 		# 	print("Incorrect combination of state and action values")
 		# 	sys.exit()
-		print("updated")
-		centroid = self.get_Centroid('/home/jihirshu/robot_recording_0.wav')
-		centroid =  float(centroid)
-		rms = self.get_rms('/home/jihirshu/robot_recording_0.wav')
-		rms = float(rms)
+		# print("updated")
+		# centroid = self.get_Centroid('/home/jihirshu/robot_recording_0.wav')
+		# centroid =  float(centroid)
+		# rms = self.get_rms('/home/jihirshu/robot_recording_0.wav')
+		# rms = float(rms)
 
-		print(centroid, rms, state, action, self.i)
+		observation = self.classify(action)
+
+		print(observation, state, action, self.i)
 		self.i=self.i+1
-		return centroid, rms
+		return observation
 
 
 def main():

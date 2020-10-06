@@ -34,7 +34,7 @@ public :
 
     virtual ObservationResultSharedPtr getObservation(const ObservationRequest* observationRequest) const override {
         ObservationResultSharedPtr observationResult(new ObservationResult);
-        VectorFloat observationVec({0.0, 0.0});
+        VectorFloat observationVec({0.0});
         observationResult->state = observationRequest->currentState.get();
         observationResult->action = observationRequest->action;
         auto Action = observationRequest->action;
@@ -42,73 +42,152 @@ public :
         VectorFloat stateVec = observationRequest->currentState->as<VectorState>()->asVector();
         FloatType sample = dist_(*(robotEnvironment_->getRobot()->getRandomEngine().get()));
 
-        if (binNumber == 4) //SLIDE
+        if (binNumber == 4) //ACTION 1
         {
-            if (stateVec[stateVec.size() - 1] == 0) // PLASTIC CUP
+            if (stateVec[stateVec.size() - 1] == 0) // PRINGLES CAN
             {
-                Vectordf obs = pringles_can_action1->sample(1);
-                observationVec[0] = obs(0,0);
-                observationVec[1] = obs(1,0);
+                if (sample <= 0.85)
+                {
+                    observationVec[0] = 0;
+                }
+                else if (sample <= 0.9)
+                {
+                    observationVec[0] = 1;
+                }
+                else if (sample <= 0.95)
+                {
+                    observationVec[0] = 2;
+                }
+                else
+                {
+                    observationVec[0] = 3;
+                }            
                 // cout<<"Pringles can action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
             else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
-                Vectordf obs = coffee_mug_action1->sample(1);
-                observationVec[0] = obs(0,0);
-                observationVec[1] = obs(1,0);
+                if (sample <= 0.85)
+                {
+                    observationVec[0] = 1;
+                }
+                else if (sample <= 0.9)
+                {
+                    observationVec[0] = 0;
+                }
+                else if (sample <= 0.95)
+                {
+                    observationVec[0] = 2;
+                }
+                else
+                {
+                    observationVec[0] = 3;
+                }
                 // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
             else if (stateVec[stateVec.size() - 1] == 2)// COFFEE PLASTIC CUP
             {
-                Vectordf obs = coffee_plastic_cup_action1->sample(1);
-                observationVec[0] = obs(0,0);
-                observationVec[1] = obs(1,0);
+                if (sample <= 0.85)
+                {
+                    observationVec[0] = 2;
+                }
+                else if (sample <= 0.9)
+                {
+                    observationVec[0] = 1;
+                }
+                else if (sample <= 0.95)
+                {
+                    observationVec[0] = 0;
+                }
+                else
+                {
+                    observationVec[0] = 3;
+                }
                 // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
-            else                                        // COFFEE CUP PAPER BASE 
+            else                             // PAPER BASE 
             {
-                Vectordf obs = coffee_cup_paper_base_action1->sample(1);
-                observationVec[0] = obs(0,0);
-                observationVec[1] = obs(1,0);
+                if (sample <= 0.5)
+                {
+                    observationVec[0] = 3;
+                }
+                else
+                {
+                    observationVec[0] = 2;
+                }
                 // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
             
         }
-        else if (binNumber == 5) //BANG
+        else if (binNumber == 5)    //ACTION 2
         {
-            if (stateVec[stateVec.size() - 1] == 0) // PLASTIC CUP
+            if (stateVec[stateVec.size() - 1] == 0) // PRINGLES CAN
             {
-                Vectordf obs = pringles_can_action2->sample(1);
-                observationVec[0] = obs(0,0);
-                observationVec[1] = obs(1,0);
+                if (sample <= 0.8)
+                {
+                    observationVec[0] = 0;
+                }
+                else
+                {
+                    observationVec[0] = 2;
+                }
                 // cout<<"Pringles can action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
             else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
-                Vectordf obs = coffee_mug_action2->sample(1);
-                observationVec[0] = obs(0,0);
-                observationVec[1] = obs(1,0);
+                if (sample <= 0.8)
+                {
+                    observationVec[0] = 1;
+                }
+                else
+                {
+                    observationVec[0] = 2;
+                }
                 // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
             else if (stateVec[stateVec.size() - 1] == 2)// COFFEE PLASTIC CUP
             {
-                Vectordf obs = coffee_plastic_cup_action2->sample(1);
-                observationVec[0] = obs(0,0);
-                observationVec[1] = obs(1,0);
+                if (sample <= 0.85)
+                {
+                    observationVec[0] = 2;
+                }
+                else if (sample <= 0.9)
+                {
+                    observationVec[0] = 1;
+                }
+                else if (sample <= 0.95)
+                {
+                    observationVec[0] = 0;
+                }
+                else
+                {
+                    observationVec[0] = 3;
+                }
                 // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
-            else                                        // COFFEE CUP PAPER BASE 
+            else                             // PAPER BASE 
             {
-                Vectordf obs = coffee_cup_paper_base_action2->sample(1);
-                observationVec[0] = obs(0,0);
-                observationVec[1] = obs(1,0);
+                if (sample <= 0.85)
+                {
+                    observationVec[0] = 3;
+                }
+                else if (sample <= 0.9)
+                {
+                    observationVec[0] = 1;
+                }
+                else if (sample <= 0.95)
+                {
+                    observationVec[0] = 2;
+                }
+                else
+                {
+                    observationVec[0] = 0;
+                }
                 // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
         }
         else
         {   
-            observationVec[0] = 0.0;
-            observationVec[1] = 0.0;
+            observationVec[0] = 5;
         }
 
         
@@ -123,61 +202,110 @@ public :
         VectorFloat stateVec = state->as<VectorState>()->asVector();
         VectorFloat observationVec = observation->as<VectorObservation>()->asVector();
         FloatType pdf = 0.0;
-        if (binNumber == 4) // SLIDE ACTION
+        if (binNumber == 4) //ACTION1
         {
-            if (stateVec[stateVec.size() - 1] == 0) //PLASTIC CUP
+            if (stateVec[stateVec.size() - 1] == 0) //PRINGLES CAN
             {
-                pdf = pringles_can_action1->pdf(observationVec);
+                if (observationVec[observationVec.size() - 1] == 0)
+                    return 0.85;
+                else if (observationVec[observationVec.size() - 1] == 1)
+                    return 0.05;
+                else if (observationVec[observationVec.size() - 1] == 2)
+                    return 0.05;
+                else
+                    return 0.05;
             }
             else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
-                pdf = coffee_mug_action1->pdf(observationVec);
+                if (observationVec[observationVec.size() - 1] == 0)
+                    return 0.05;
+                else if (observationVec[observationVec.size() - 1] == 1)
+                    return 0.85;
+                else if (observationVec[observationVec.size() - 1] == 2)
+                    return 0.05;
+                else
+                    return 0.05;
             }
-            else if (stateVec[stateVec.size() - 1] == 2)// COFFEE PLASTIC CUP
+            else if (stateVec[stateVec.size() - 1] == 2)// COFEE PLASTIC CUP
             {
-                pdf = coffee_plastic_cup_action1->pdf(observationVec);
+                if (observationVec[observationVec.size() - 1] == 0)
+                    return 0.05;
+                else if (observationVec[observationVec.size() - 1] == 1)
+                    return 0.05;
+                else if (observationVec[observationVec.size() - 1] == 2)
+                    return 0.85;
+                else
+                    return 0.05;
             }
-            else // COFFEE PLASTIC CUP PAPER BASE
+            else                                        // PAPER BASE
             {
-                pdf = coffee_cup_paper_base_action1->pdf(observationVec);
-            }
-
+                if (observationVec[observationVec.size() - 1] == 0)
+                    return 0.01;
+                else if (observationVec[observationVec.size() - 1] == 1)
+                    return 0.01;
+                else if (observationVec[observationVec.size() - 1] == 2)
+                    return 0.5;
+                else
+                    return 0.5;
+            }                        
 
         }
-        else if (binNumber == 5) //BANG ACTION
+        else if (binNumber == 5) //ACTION2
         {
-            if (stateVec[stateVec.size() - 1] == 0) //PLASTIC CUP
+            if (stateVec[stateVec.size() - 1] == 0) //PRINGLES CAN
             {
-                pdf = pringles_can_action2->pdf(observationVec);
+                if (observationVec[observationVec.size() - 1] == 0)
+                    return 0.8;
+                else if (observationVec[observationVec.size() - 1] == 1)
+                    return 0.01;
+                else if (observationVec[observationVec.size() - 1] == 2)
+                    return 0.2;
+                else
+                    return 0.01;
             }
             else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
-                pdf = coffee_mug_action2->pdf(observationVec);
+                if (observationVec[observationVec.size() - 1] == 0)
+                    return 0.01;
+                else if (observationVec[observationVec.size() - 1] == 1)
+                    return 0.8;
+                else if (observationVec[observationVec.size() - 1] == 2)
+                    return 0.2;
+                else
+                    return 0.01;
             }
-            else if (stateVec[stateVec.size() - 1] == 2)// COFFEE PLASTIC CUP
+            else if (stateVec[stateVec.size() - 1] == 2)// COFEE PLASTIC CUP
             {
-                pdf = coffee_plastic_cup_action2->pdf(observationVec);
+                if (observationVec[observationVec.size() - 1] == 0)
+                    return 0.05;
+                else if (observationVec[observationVec.size() - 1] == 1)
+                    return 0.05;
+                else if (observationVec[observationVec.size() - 1] == 2)
+                    return 0.85;
+                else
+                    return 0.05;
             }
-            else // COFFEE PLASTIC CUP PAPER BASE
+            else                                        // PAPER BASE
             {
-                pdf = coffee_cup_paper_base_action2->pdf(observationVec);
+                if (observationVec[observationVec.size() - 1] == 0)
+                    return 0.05;
+                else if (observationVec[observationVec.size() - 1] == 1)
+                    return 0.05;
+                else if (observationVec[observationVec.size() - 1] == 2)
+                    return 0.05;
+                else
+                    return 0.85;
             }
-
         }
         else
         {
-            if (observationVec[observationVec.size() - 1] == 0.0 && observationVec[observationVec.size() - 2] == 0.0)
+            if (observationVec[observationVec.size() - 1] == 5)
                 return 1.0;
             else
                 cout<<observationVec[0]<<"  "<<observationVec[1]<<endl;
                 ERROR("IMPOSSIBLE");
         }
 
-        // cout<<binNumber<<"  "<< stateVec[stateVec.size() - 1]<<"  "<< pdf << endl;
-        // cout<<observationVec[0]<<"   "<<observationVec[1]<<endl;        
-
-        
-        return pdf;
     }   
 
     bool makeObservationDistribution() 
