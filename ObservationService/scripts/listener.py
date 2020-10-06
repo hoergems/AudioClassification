@@ -41,7 +41,8 @@ from std_msgs.msg import Bool
 import pyaudio
 import wave
 from threading import Lock
-
+import os
+import subprocess
 class Recorder:
     
     def __init__(self):
@@ -61,22 +62,22 @@ class Recorder:
         rospy.init_node('listener', anonymous=True)
         
         print("Service is now enabled")
-        print(rospy.get_param("/AudioClassification_Record"))
+        # print(rospy.get_param("/AudioClassification_Record"))
         recordedSomething=False
         frames = []
         p = pyaudio.PyAudio()
         
         while (True):
-            if (rospy.get_param("/AudioClassification_Stop")):
-                print("Exiting")
-                break;
+            # if (rospy.get_param("/AudioClassification_Stop")):
+                # print("Exiting")
+                # break;
             if (rospy.get_param("/AudioClassification_Record")):
                 stream = p.open(format=self.FORMAT,
                 channels=self.CHANNELS,
                 rate=self.RATE,
                 input=True,
                 frames_per_buffer=self.CHUNK)
-                while(rospy.get_param("/AudioClassification_Record")):
+                while (rospy.get_param("/AudioClassification_Record")):
                     data = stream.read(self.CHUNK)
                     frames.append(data)                
         
@@ -99,6 +100,8 @@ class Recorder:
                 print("concluded")
                 frames = []
                 recordedSomething = False
+                # os.system('source ~/workspaces/AudioClassification_Movo/ObservationService/scripts/myenv/bin/activate'
+                os.system('~/workspaces/AudioClassification_Movo/ObservationService/scripts/myenv/bin/python ~/workspaces/AudioClassification_Movo/ObservationService/scripts/filter.py')
 
     def record(self):
         p = pyaudio.PyAudio()
@@ -132,6 +135,8 @@ class Recorder:
         wf.writeframes(b''.join(frames))
         wf.close()
         print("concluded")
+        os.system('source myenv/bin/activate')
+        os.system('python3 filter.py')
 
     def callback(self,data):
         print(data)

@@ -36,13 +36,14 @@ public :
         auto Action = propagationResult->action;
         unsigned int binNumber = Action->as<DiscreteVectorAction>()->getBinNumber();
 
-        if ((binNumber == 4) || (binNumber == 5)) // SLIDE OR BANG ACTION
+        if ((binNumber == 4))//|| (binNumber == 5)) // SLIDE OR BANG ACTION
         {
             return -1.0;
         }
         else if (binNumber == 6) // MOVE TO LOCATION A
         {
-            if (stateVec[stateVec.size() - 1] == 0) // PLASTIC CUP
+            cout<<"FINAL STATE : "<<stateVec[stateVec.size() - 1]<<endl;
+            if ((stateVec[stateVec.size() - 1] == 0) || (stateVec[stateVec.size() - 1] == 2)) 
             {
                 return 10.0;
             }
@@ -53,7 +54,8 @@ public :
         }
         else if (binNumber == 7) // MOVE TO LOCATION B
         {
-            if (stateVec[stateVec.size() - 1] == 1) // COFFEE MUG
+            cout<<"FINAL STATE : "<<stateVec[stateVec.size() - 1]<<endl;
+            if ((stateVec[stateVec.size() - 1] == 1) || (stateVec[stateVec.size() - 1] == 3))
             {
                 return 10.0;
             }

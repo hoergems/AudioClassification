@@ -376,7 +376,9 @@ private:
             //     newJointAngles = applyEndEffectorVelocity_(newJointAngles, endEffectorVelocity);
             // }
             if (robotEnvironment_->isExecutionEnvironment())
-            {
+            {   
+                // movoRobotInterface_->closeGripper();
+                std::this_thread::sleep_for(std::chrono::seconds(2));
                 nh.setParam("/AudioClassification_Record", true);
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 cout<<"====================>START SIGNAL SENT"<<endl;
@@ -384,6 +386,9 @@ private:
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 nh.setParam("/AudioClassification_Record", false);
                 cout<<"====================>END SIGNAL SENT"<<endl;
+                // std::this_thread::sleep_for(std::chrono::seconds(2));
+                // movoRobotInterface_->openGripper();
+
             }
             else
             {

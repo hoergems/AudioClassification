@@ -17,17 +17,18 @@ import pandas as pd
 import time
 import sys
 import rospy
-
+from scipy.signal.signaltools import wiener
 from ObservationService.srv import Observation
-
+from subprocess import call
 import rospy
-
+import pyaudio
+import wave
 
 
 class ObservationServer:
 
 	def __init__(self):
-		coffee_mug_bang = ['Coffee_mug_bang_1.wav', ]
+		coffee_mug_bang = ['Coffee_mug_bang_1.wav']
 		coffee_mug_slide = ['Coffee_mug_drag_1.wav']
 		plastic_cup_bang = ['Plastic_cup_bang_1.wav','Plastic_cup_bang_2.wav','Plastic_cup_bang_3.wav']
 		plastic_cup_slide = ['Plastic_cup_drag_1.wav','Plastic_cup_drag_2.wav','Plastic_cup_drag_3.wav']
@@ -207,20 +208,28 @@ class ObservationServer:
 
 	def get_Centroid(self, file):
 	    y, sr = librosa.load(file)
-
+	    # y = wiener(y, (10))
 	    y = self.TrimSignal(y)
 	    y = np.asfortranarray(y)
-
+	 
 	    centroid = self.spectral_centroid(y, sr)
 
 	    return centroid
 
 	def get_rms(self, file):
 		y, sr = librosa.load(file)
+		print(len(y))
 		y = self.TrimSignal(y)
-	 	y = np.asfortranarray(y)
+		y = np.asfortranarray(y)
+		# print(len(y))
+		# p = pyaudio.PyAudio()
+		# wf = wave.open('trimmed', 'wb')
+		# wf.setnchannels(4)
+		# wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
+		# wf.setframerate(sr)
+		# wf.writeframes(y)
+		# wf.close()
 		rms = np.mean(librosa.feature.rms(y))
-
 		return rms
 
 	def callback(self, req):
@@ -243,6 +252,7 @@ class ObservationServer:
 		# else:
 		# 	print("Incorrect combination of state and action values")
 		# 	sys.exit()
+		print("updated")
 		centroid = self.get_Centroid('/home/jihirshu/robot_recording_0.wav')
 		centroid =  float(centroid)
 		rms = self.get_rms('/home/jihirshu/robot_recording_0.wav')

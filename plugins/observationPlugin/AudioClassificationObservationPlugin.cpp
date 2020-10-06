@@ -51,9 +51,23 @@ public :
                 observationVec[1] = obs(1,0);
                 // cout<<"Pringles can action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
-            else // COFFEE MUG
+            else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
                 Vectordf obs = coffee_mug_action1->sample(1);
+                observationVec[0] = obs(0,0);
+                observationVec[1] = obs(1,0);
+                // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
+            }
+            else if (stateVec[stateVec.size() - 1] == 2)// COFFEE PLASTIC CUP
+            {
+                Vectordf obs = coffee_plastic_cup_action1->sample(1);
+                observationVec[0] = obs(0,0);
+                observationVec[1] = obs(1,0);
+                // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
+            }
+            else                                        // COFFEE CUP PAPER BASE 
+            {
+                Vectordf obs = coffee_cup_paper_base_action1->sample(1);
                 observationVec[0] = obs(0,0);
                 observationVec[1] = obs(1,0);
                 // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
@@ -67,16 +81,29 @@ public :
                 Vectordf obs = pringles_can_action2->sample(1);
                 observationVec[0] = obs(0,0);
                 observationVec[1] = obs(1,0);
-                // cout<<"Pringles can action 2 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;   
+                // cout<<"Pringles can action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
-            else //COFFEE MUG
+            else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
                 Vectordf obs = coffee_mug_action2->sample(1);
                 observationVec[0] = obs(0,0);
                 observationVec[1] = obs(1,0);
-                // cout<<"Coffee mug action 2 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
+                // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
-
+            else if (stateVec[stateVec.size() - 1] == 2)// COFFEE PLASTIC CUP
+            {
+                Vectordf obs = coffee_plastic_cup_action2->sample(1);
+                observationVec[0] = obs(0,0);
+                observationVec[1] = obs(1,0);
+                // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
+            }
+            else                                        // COFFEE CUP PAPER BASE 
+            {
+                Vectordf obs = coffee_cup_paper_base_action2->sample(1);
+                observationVec[0] = obs(0,0);
+                observationVec[1] = obs(1,0);
+                // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
+            }
         }
         else
         {   
@@ -101,27 +128,41 @@ public :
             if (stateVec[stateVec.size() - 1] == 0) //PLASTIC CUP
             {
                 pdf = pringles_can_action1->pdf(observationVec);
-                // cout<<"Pringles can action 1 PDF : "<<observationVec[0]<<" : "<<pdf<<endl;
             }
-            else // COFFEE MUG
+            else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
                 pdf = coffee_mug_action1->pdf(observationVec);
-                // cout<<"Coffee mug action 1 PDF : "<<observationVec[0]<<" : "<<pdf<<endl;
             }
+            else if (stateVec[stateVec.size() - 1] == 2)// COFFEE PLASTIC CUP
+            {
+                pdf = coffee_plastic_cup_action1->pdf(observationVec);
+            }
+            else // COFFEE PLASTIC CUP PAPER BASE
+            {
+                pdf = coffee_cup_paper_base_action1->pdf(observationVec);
+            }
+
+
         }
         else if (binNumber == 5) //BANG ACTION
         {
             if (stateVec[stateVec.size() - 1] == 0) //PLASTIC CUP
             {
                 pdf = pringles_can_action2->pdf(observationVec);
-                // cout<<"Pringles can action 2 PDF : "<<observationVec[0]<<" : "<<pdf<<endl;
             }
-            else //COFFEE MUG
+            else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
                 pdf = coffee_mug_action2->pdf(observationVec);
-                // cout<<"Coffee mug action 2 PDF : "<<observationVec[0]<<" : "<<pdf<<endl;
-                
             }
+            else if (stateVec[stateVec.size() - 1] == 2)// COFFEE PLASTIC CUP
+            {
+                pdf = coffee_plastic_cup_action2->pdf(observationVec);
+            }
+            else // COFFEE PLASTIC CUP PAPER BASE
+            {
+                pdf = coffee_cup_paper_base_action2->pdf(observationVec);
+            }
+
         }
         else
         {
@@ -147,42 +188,82 @@ public :
         coffee_mug_action2 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
         pringles_can_action1 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
         pringles_can_action2 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
-
+        coffee_plastic_cup_action1 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+        coffee_plastic_cup_action2 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+        coffee_cup_paper_base_action1 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+        coffee_cup_paper_base_action2 = std::unique_ptr<MultivariateNormalDistribution<FloatType>>(new MultivariateNormalDistribution<FloatType>(randomEngine));
+// -----------------------------------------------------------------------------------------------------------------------1
         Matrixdf mean = Matrixdf::Zero(2, 1);
         Matrixdf covarianceMatrix = Matrixdf::Identity(2, 2);
-        mean(0,0) = 1387.0;
-        mean(1,0) = 0.0155;
-        covarianceMatrix(0,0) = 295.0*295.0;
-        covarianceMatrix(1,1) = 1.0965e-6;
+        mean(0,0) = 1121.0;
+        mean(1,0) = 0.0178;
+        covarianceMatrix(0,0) = 30.0*30.0;
+        covarianceMatrix(1,1) = 1.265e-6;
         coffee_mug_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         coffee_mug_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
-
+// --------------------------------------------------------------------------------------------------------------------- 2
         mean = Matrixdf::Zero(2, 1);
         covarianceMatrix = Matrixdf::Identity(2, 2);
-        mean(0,0) = 1254.0;
-        mean(1,0) = 0.01963;
-        covarianceMatrix(0,0) = 98.0*98.0;
-        covarianceMatrix(1,1) = 1.4e-6;
+        mean(0,0) = 1308.0;
+        mean(1,0) = 0.01220;
+        covarianceMatrix(0,0) = 90.0*90.0;
+        covarianceMatrix(1,1) = 3e-6;
         coffee_mug_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         coffee_mug_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
-
+// -----------------------------------------------------------------------------------------------------------------------3
         mean = Matrixdf::Zero(2, 1);
         covarianceMatrix = Matrixdf::Identity(2, 2);
-        mean(0,0) = 1424.0;
-        mean(1,0) = 0.01452;
-        covarianceMatrix(0,0) = 174.0*174.0;
-        covarianceMatrix(1,1) = 4.26e-6;
+        mean(0,0) = 1426.0;
+        mean(1,0) = 0.0155;//0.01452;
+        covarianceMatrix(0,0) = 47.0*47.0;
+        covarianceMatrix(1,1) = 1.0965e-6;//4.26e-6;
         pringles_can_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         pringles_can_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
-
+// ----------------------------------------------------------------------------------------------------------------------- 4
         mean = Matrixdf::Zero(2, 1);
         covarianceMatrix = Matrixdf::Identity(2, 2);
-        mean(0,0) = 1993.0;
-        mean(1,0) = 0.01597;
-        covarianceMatrix(0,0) = 159.0*159.0;
-        covarianceMatrix(1,1) = 4.53e-6;
+        mean(0,0) = 2423.0;
+        mean(1,0) = 0.00763;//0.01597;
+        covarianceMatrix(0,0) = 92.0*92.0;
+        covarianceMatrix(1,1) = 1.4e-6;//4.53e-6;
         pringles_can_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
         pringles_can_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+// ----------------------------------------------------------------------------------------------------------------------- 5
+        mean = Matrixdf::Zero(2, 1);
+        covarianceMatrix = Matrixdf::Identity(2, 2);
+        mean(0,0) = 1277.0;
+        mean(1,0) = 0.016;//0.00888;
+        covarianceMatrix(0,0) = 33.0*33.0;
+        covarianceMatrix(1,1) = 5.45e-6;//6.92e-6;
+        coffee_plastic_cup_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        coffee_plastic_cup_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+// ----------------------------------------------------------------------------------------------------------------------- 6
+        mean = Matrixdf::Zero(2, 1);
+        covarianceMatrix = Matrixdf::Identity(2, 2);
+        mean(0,0) = 1547.0;
+        mean(1,0) = 0.011;//0.0168;
+        covarianceMatrix(0,0) = 96.0*96.0;
+        covarianceMatrix(1,1) = 8e-6;//1.26e-6;
+        coffee_plastic_cup_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        coffee_plastic_cup_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+// ----------------------------------------------------------------------------------------------------------------------- 7
+        mean = Matrixdf::Zero(2, 1);
+        covarianceMatrix = Matrixdf::Identity(2, 2);
+        mean(0,0) = 4500.0;
+        mean(1,0) = 5.00825;
+        covarianceMatrix(0,0) = 59.0*59.0;
+        covarianceMatrix(1,1) = 3.54e-6;
+        coffee_cup_paper_base_action1->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        coffee_cup_paper_base_action1->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
+// ----------------------------------------------------------------------------------------------------------------------- 8
+        mean = Matrixdf::Zero(2, 1);
+        covarianceMatrix = Matrixdf::Identity(2, 2);
+        mean(0,0) = 4500.0;
+        mean(1,0) = 5.00844;
+        covarianceMatrix(0,0) = 88.0*88.0;
+        covarianceMatrix(1,1) = 5.63e-6;
+        coffee_cup_paper_base_action2->as<MultivariateNormalDistribution<FloatType>>()->setMean(mean);
+        coffee_cup_paper_base_action2->as<MultivariateNormalDistribution<FloatType>>()->setCovariance(covarianceMatrix);
 
     }
 
@@ -193,6 +274,10 @@ private:
     std::unique_ptr<Distribution<FloatType>> coffee_mug_action2;
     std::unique_ptr<Distribution<FloatType>> pringles_can_action1;
     std::unique_ptr<Distribution<FloatType>> pringles_can_action2;
+    std::unique_ptr<Distribution<FloatType>> coffee_plastic_cup_action1;
+    std::unique_ptr<Distribution<FloatType>> coffee_plastic_cup_action2;
+    std::unique_ptr<Distribution<FloatType>> coffee_cup_paper_base_action1;
+    std::unique_ptr<Distribution<FloatType>> coffee_cup_paper_base_action2;
 
 };
 
