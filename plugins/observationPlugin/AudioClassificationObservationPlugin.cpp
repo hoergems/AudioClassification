@@ -46,11 +46,11 @@ public :
         {
             if (stateVec[stateVec.size() - 1] == 0) // PRINGLES CAN
             {
-                if (sample <= 0.85)
+                if (sample <= 0.50)
                 {
                     observationVec[0] = 0;
                 }
-                else if (sample <= 0.9)
+                else if (sample <= 0.80)
                 {
                     observationVec[0] = 1;
                 }
@@ -66,15 +66,15 @@ public :
             }
             else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
-                if (sample <= 0.85)
+                if (sample <= 0.67)
                 {
                     observationVec[0] = 1;
                 }
-                else if (sample <= 0.9)
+                else if (sample <= 0.78)
                 {
                     observationVec[0] = 0;
                 }
-                else if (sample <= 0.95)
+                else if (sample <= 0.89)
                 {
                     observationVec[0] = 2;
                 }
@@ -86,15 +86,15 @@ public :
             }
             else if (stateVec[stateVec.size() - 1] == 2)// COFFEE PLASTIC CUP
             {
-                if (sample <= 0.85)
+                if (sample <= 0.67)
                 {
                     observationVec[0] = 2;
                 }
-                else if (sample <= 0.9)
+                else if (sample <= 0.78)
                 {
                     observationVec[0] = 1;
                 }
-                else if (sample <= 0.95)
+                else if (sample <= 0.89)
                 {
                     observationVec[0] = 0;
                 }
@@ -110,9 +110,17 @@ public :
                 {
                     observationVec[0] = 3;
                 }
-                else
+                else if (sample <= 0.75)
+                {
+                    observationVec[0] = 1;
+                }
+                else if (sample <= 0.99)
                 {
                     observationVec[0] = 2;
+                }
+                else
+                {
+                    observationVec[0] = 0;
                 }
                 // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
@@ -122,39 +130,57 @@ public :
         {
             if (stateVec[stateVec.size() - 1] == 0) // PRINGLES CAN
             {
-                if (sample <= 0.8)
+                if (sample <= 0.6)
                 {
                     observationVec[0] = 0;
                 }
-                else
+                else if (sample <= 0.9)
                 {
                     observationVec[0] = 2;
                 }
+                else if (sample <= 0.95)
+                {
+                    observationVec[0] = 1;
+                }
+                else 
+                {
+                    observationVec[0] = 3;
+                }
+                
+                
                 // cout<<"Pringles can action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
             else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
-                if (sample <= 0.8)
+                if (sample <= 0.6)
                 {
                     observationVec[0] = 1;
                 }
-                else
+                else if (sample <= 0.9) 
                 {
                     observationVec[0] = 2;
+                }
+                else if (sample <= 0.95) 
+                {
+                    observationVec[0] = 0;
+                }
+                else 
+                {
+                    observationVec[0] = 3;
                 }
                 // cout<<"Coffee mug action 1 : "<<observationVec[0]<<"  "<<observationVec[1]<<endl;
             }
             else if (stateVec[stateVec.size() - 1] == 2)// COFFEE PLASTIC CUP
             {
-                if (sample <= 0.85)
+                if (sample <= 0.67)
                 {
                     observationVec[0] = 2;
                 }
-                else if (sample <= 0.9)
+                else if (sample <= 0.78)
                 {
                     observationVec[0] = 1;
                 }
-                else if (sample <= 0.95)
+                else if (sample <= 0.89)
                 {
                     observationVec[0] = 0;
                 }
@@ -166,15 +192,15 @@ public :
             }
             else                             // PAPER BASE 
             {
-                if (sample <= 0.85)
+                if (sample <= 0.67)
                 {
                     observationVec[0] = 3;
                 }
-                else if (sample <= 0.9)
+                else if (sample <= 0.78)
                 {
                     observationVec[0] = 1;
                 }
-                else if (sample <= 0.95)
+                else if (sample <= 0.89)
                 {
                     observationVec[0] = 2;
                 }
@@ -207,44 +233,44 @@ public :
             if (stateVec[stateVec.size() - 1] == 0) //PRINGLES CAN
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.85;
+                    return 0.50;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.05;
+                    return 0.30;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.05;
+                    return 0.15;
                 else
                     return 0.05;
             }
             else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.85;
+                    return 0.67;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.05;
+                    return 0.11;
                 else
-                    return 0.05;
+                    return 0.11;
             }
             else if (stateVec[stateVec.size() - 1] == 2)// COFEE PLASTIC CUP
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.85;
+                    return 0.67;
                 else
-                    return 0.05;
+                    return 0.11;
             }
             else                                        // PAPER BASE
             {
                 if (observationVec[observationVec.size() - 1] == 0)
                     return 0.01;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.01;
+                    return 0.25;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.5;
+                    return 0.25;
                 else
                     return 0.5;
             }                        
@@ -255,46 +281,46 @@ public :
             if (stateVec[stateVec.size() - 1] == 0) //PRINGLES CAN
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.8;
+                    return 0.6;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.01;
+                    return 0.05;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.2;
+                    return 0.3;
                 else
-                    return 0.01;
+                    return 0.05;
             }
             else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.01;
+                    return 0.05;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.8;
+                    return 0.6;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.2;
+                    return 0.3;
                 else
-                    return 0.01;
+                    return 0.05;
             }
             else if (stateVec[stateVec.size() - 1] == 2)// COFEE PLASTIC CUP
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.85;
+                    return 0.67;
                 else
-                    return 0.05;
+                    return 0.11;
             }
             else                                        // PAPER BASE
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.05;
+                    return 0.11;
                 else
-                    return 0.85;
+                    return 0.67;
             }
         }
         else

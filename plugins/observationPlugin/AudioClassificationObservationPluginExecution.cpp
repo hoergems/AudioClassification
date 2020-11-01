@@ -169,44 +169,44 @@ public :
             if (stateVec[stateVec.size() - 1] == 0) //PRINGLES CAN
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.85;
+                    return 0.50;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.05;
+                    return 0.30;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.05;
+                    return 0.15;
                 else
                     return 0.05;
             }
             else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.85;
+                    return 0.67;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.05;
+                    return 0.11;
                 else
-                    return 0.05;
+                    return 0.11;
             }
             else if (stateVec[stateVec.size() - 1] == 2)// COFEE PLASTIC CUP
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.85;
+                    return 0.67;
                 else
-                    return 0.05;
+                    return 0.11;
             }
             else                                        // PAPER BASE
             {
                 if (observationVec[observationVec.size() - 1] == 0)
                     return 0.01;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.01;
+                    return 0.25;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.5;
+                    return 0.25;
                 else
                     return 0.5;
             }                        
@@ -217,46 +217,46 @@ public :
             if (stateVec[stateVec.size() - 1] == 0) //PRINGLES CAN
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.8;
+                    return 0.6;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.01;
+                    return 0.05;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.2;
+                    return 0.3;
                 else
-                    return 0.01;
+                    return 0.05;
             }
             else if (stateVec[stateVec.size() - 1] == 1)// COFFEE MUG
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.01;
+                    return 0.05;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.8;
+                    return 0.6;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.2;
+                    return 0.3;
                 else
-                    return 0.01;
+                    return 0.05;
             }
             else if (stateVec[stateVec.size() - 1] == 2)// COFEE PLASTIC CUP
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.85;
+                    return 0.67;
                 else
-                    return 0.05;
+                    return 0.11;
             }
             else                                        // PAPER BASE
             {
                 if (observationVec[observationVec.size() - 1] == 0)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 1)
-                    return 0.05;
+                    return 0.11;
                 else if (observationVec[observationVec.size() - 1] == 2)
-                    return 0.05;
+                    return 0.11;
                 else
-                    return 0.85;
+                    return 0.67;
             }
         }
         else
