@@ -24,3 +24,5 @@ or add this line to your .bashrc file. \<install folder\> is the installation fo
 
     cd <oppt folder>/bin
     ./abt --cfg <folder where this repo is cloned into>/cfg/AudioClassification.cfg
+
+![Alt text](block_diagram.jpeg?raw=true "Title")
