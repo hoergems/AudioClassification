@@ -1,9 +1,17 @@
 # AudioClassification
 
-## Installation:
 
+Clone the repo into a desired location. In this example we will use the local Desktop and install the module. 
+## Installation:
+    cd ~/Desktop
     git clone https://github.com/hoergems/AudioClassification.git
+    mkdir Observation && cd Observation
+    mkdir src
+    ln -s ~/Desktop/AudioClassification/ObservationService ~/Desktop/Observation/src
+    catkin_make
+    cd ~/Desktop
     cd AudioClassification && mkdir build && cd build
+    source ~/Desktop/Observation/devel/setup.bash
     cmake -DCMAKE_INSTALL_PREFIX=<install folder> ..
     make && make install
 
