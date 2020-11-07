@@ -12,7 +12,7 @@ Clone the repo into a desired location. In this example we will use the local De
     cd ~/Desktop
     cd AudioClassification && mkdir build && cd build
     source ~/Desktop/Observation/devel/setup.bash
-    cmake -DCMAKE_INSTALL_PREFIX=<install folder> ..
+    cmake -DCMAKE_INSTALL_PREFIX=<install folder> -DUSE_ARM_HACK=ON ..
     make && make install
 
 ## Usage
@@ -24,13 +24,24 @@ Then run
 
     roslaunch movo_bringup_simple main.launch
 
-On your computer, open a terminal and run
+On your computer, open 3 terminal windows. On the first window run the following commands : 
 
     source <install folder>/share/oppt/setup.sh
-
-or add this line to your .bashrc file. \<install folder\> is the installation folder specified in the cmake command above. In the same terminal you can then run the problem with the provided config file, e.g.
-
+    source ~/Desktop/ObservationService/devel/setup.bash
     cd <oppt folder>/bin
     ./abt --cfg <folder where this repo is cloned into>/cfg/AudioClassification.cfg
+
+On the second window run the following commands : 
+
+    source <install folder>/share/oppt/setup.sh
+    source ~/Desktop/ObservationService/devel/setup.bash
+    rosrun ObservationService serviceNode.py
+
+
+On the third window run the following commands : 
+
+    source <install folder>/share/oppt/setup.sh
+    source ~/Desktop/ObservationService/devel/setup.bash
+    rosrun ObservationService listener.py
 
 ![Alt text](block_diagram.jpeg)
